@@ -1,0 +1,512 @@
+do Negócio</span>
+          <span class="prop-tag prop-hs">hubspot_owner_id (ticket)</span>
+          <span class="prop-tag prop-hs">hubspot_owner_id (negócio)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="signal-row"><div class="signal-chip">Status = "Gerar Contratos" → n8n monitora e processa</div></div>
+
+  <div class="step-row">
+    <div class="step-aside">
+      <div class="step-badge badge-n8n">n8n</div>
+      <div class="step-type-lbl lbl-n8n">n8n · 1/5</div>
+      <div class="step-vline"></div>
+    </div>
+    <div class="step-body">
+      <div class="card card-warm">
+        <div class="card-stripe stripe-solar"></div>
+        <div class="card-head">
+          <div>
+            <div class="card-id">Integração n8n · Handoff 1/5</div>
+            <div class="card-title">Geração dos Contratos</div>
+          </div>
+          <div class="card-status status-n8n">🔶 n8n</div>
+        </div>
+        <div class="card-body">
+          <div class="actions-list">
+            <div class="action"><div class="act-num num-solar">1</div><span>Coleta dados do ticket e dos negócios associados via API do HubSpot</span></div>
+            <div class="action"><div class="act-num num-solar">2</div><span>Gera os contratos com os dados do beneficiário e da usina</span></div>
+            <div class="action"><div class="act-num num-solar">3</div><span>Escreve: <strong>Contratos do Ticket Gerados = verdadeiro</strong></span></div>
+          </div>
+        </div>
+        <div class="card-props">
+          <span class="props-lbl">Sinal de saída:</span>
+          <span class="prop-tag prop-n8n">Contratos do Ticket Gerados = verdadeiro</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="signal-row"><div class="signal-chip">"Contratos do Ticket Gerados" muda para verdadeiro → HubSpot aciona WF2</div></div>
+
+  <div class="step-row">
+    <div class="step-aside">
+      <div class="step-badge badge-hs">2</div>
+      <div class="step-type-lbl lbl-hs">HubSpot</div>
+      <div class="step-vline"></div>
+    </div>
+    <div class="step-body">
+      <div class="card card-white">
+        <div class="card-stripe stripe-rubi"></div>
+        <div class="card-head">
+          <div>
+            <div class="card-id">WF Ticket · ID 1754291845</div>
+            <div class="card-title">Contratos Gerados → Subir para ClickSign</div>
+          </div>
+          <div class="card-status status-hs">● Ativo</div>
+        </div>
+        <div class="card-body">
+          <div class="col-label">Gatilho</div>
+          <div class="trig-box">
+            <div class="trig-text">Ticket em status "Gerar Contratos" AND <strong>Contratos do Ticket Gerados = verdadeiro</strong></div>
+          </div>
+          <div class="col-label" style="margin-top:12px;">O que acontece</div>
+          <div class="actions-list">
+            <div class="action"><div class="act-num num-rubi">1</div><span>Status do Ticket → <strong>"Subir Contratos - ClickSign"</strong></span></div>
+          </div>
+        </div>
+        <div class="card-props">
+          <span class="props-lbl">Propriedades:</span>
+          <span class="prop-tag prop-hs">Contratos do Ticket Gerados</span>
+          <span class="prop-tag prop-hs">Status do Ticket</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="signal-row"><div class="signal-chip">Status = "Subir Contratos - ClickSign" → n8n processa upload</div></div>
+
+  <div class="step-row">
+    <div class="step-aside">
+      <div class="step-badge badge-n8n">n8n</div>
+      <div class="step-type-lbl lbl-n8n">n8n · 2/5</div>
+      <div class="step-vline"></div>
+    </div>
+    <div class="step-body">
+      <div class="card card-warm">
+        <div class="card-stripe stripe-solar"></div>
+        <div class="card-head">
+          <div>
+            <div class="card-id">Integração n8n · Handoff 2/5</div>
+            <div class="card-title">Upload dos Contratos no ClickSign</div>
+          </div>
+          <div class="card-status status-n8n">🔶 n8n</div>
+        </div>
+        <div class="card-body">
+          <div class="actions-list">
+            <div class="action"><div class="act-num num-solar">1</div><span>Faz upload dos contratos gerados para o ClickSign</span></div>
+            <div class="action"><div class="act-num num-solar">2</div><span>Configura os signatários e posições de assinatura</span></div>
+            <div class="action"><div class="act-num num-solar">3</div><span>Escreve: <strong>Contratos do Ticket no ClickSign = verdadeiro</strong></span></div>
+          </div>
+        </div>
+        <div class="card-props">
+          <span class="props-lbl">Sinal de saída:</span>
+          <span class="prop-tag prop-n8n">Contratos do Ticket no ClickSign = verdadeiro</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="signal-row"><div class="signal-chip">"Contratos do Ticket no ClickSign" muda para verdadeiro → HubSpot aciona WF3</div></div>
+
+  <div class="step-row">
+    <div class="step-aside">
+      <div class="step-badge badge-hs">3</div>
+      <div class="step-type-lbl lbl-hs">HubSpot</div>
+      <div class="step-vline"></div>
+    </div>
+    <div class="step-body">
+      <div class="card card-white">
+        <div class="card-stripe stripe-rubi"></div>
+        <div class="card-head">
+          <div>
+            <div class="card-id">WF Ticket · ID 1756086378</div>
+            <div class="card-title">Contratos no ClickSign → Aguardando Assinatura</div>
+          </div>
+          <div class="card-status status-hs">● Ativo</div>
+        </div>
+        <div class="card-body">
+          <div class="col-label">Gatilho</div>
+          <div class="trig-box">
+            <div class="trig-text">Ticket em status "Subir Contratos - ClickSign" AND <strong>Contratos do Ticket no ClickSign = verdadeiro</strong></div>
+          </div>
+          <div class="col-label" style="margin-top:12px;">O que acontece</div>
+          <div class="actions-list">
+            <div class="action"><div class="act-num num-rubi">1</div><span>Status do Ticket → <strong>"Aguardando Assinatura"</strong></span></div>
+          </div>
+        </div>
+        <div class="card-alert alert-info">
+          <div class="alert-icon">ℹ️</div>
+          <div class="alert-text">Neste ponto o ticket aguarda o retorno do webhook do ClickSign confirmando que todas as assinaturas foram coletadas. O tempo depende da agilidade dos signatários.</div>
+        </div>
+        <div class="card-props">
+          <span class="props-lbl">Propriedades:</span>
+          <span class="prop-tag prop-hs">Contratos do Ticket no ClickSign</span>
+          <span class="prop-tag prop-hs">Status do Ticket</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="signal-row"><div class="signal-chip">ClickSign notifica n8n via webhook → assinaturas concluídas</div></div>
+
+  <div class="step-row">
+    <div class="step-aside">
+      <div class="step-badge badge-n8n">n8n</div>
+      <div class="step-type-lbl lbl-n8n">n8n · 3/5</div>
+      <div class="step-vline"></div>
+    </div>
+    <div class="step-body">
+      <div class="card card-warm">
+        <div class="card-stripe stripe-solar"></div>
+        <div class="card-head">
+          <div>
+            <div class="card-id">Integração n8n · Handoff 3/5</div>
+            <div class="card-title">Recepção do Webhook de Assinatura Concluída</div>
+          </div>
+          <div class="card-status status-n8n">🔶 n8n</div>
+        </div>
+        <div class="card-body">
+          <div class="actions-list">
+            <div class="action"><div class="act-num num-solar">1</div><span>Recebe o webhook do ClickSign confirmando todas as assinaturas</span></div>
+            <div class="action"><div class="act-num num-solar">2</div><span>Identifica o ticket correspondente no HubSpot</span></div>
+            <div class="action"><div class="act-num num-solar">3</div><span>Escreve: <strong>Contratos de Negócios Associados Assinados? = True</strong> (T maiúsculo obrigatório)</span></div>
+          </div>
+        </div>
+        <div class="card-alert alert-crit">
+          <div class="alert-icon">🚨</div>
+          <div class="alert-text"><strong>Case-sensitive crítico:</strong> O valor precisa ser <span class="mono">True</span> com T maiúsculo. Se o n8n escrever <span class="mono">true</span> em minúsculas, o WF4 do HubSpot pode não reconhecer o match e o ticket fica parado em "Aguardando Assinatura" indefinidamente.</div>
+        </div>
+        <div class="card-props">
+          <span class="props-lbl">Sinal de saída:</span>
+          <span class="prop-tag prop-n8n">Contratos de Negócios Associados Assinados? = True</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="signal-row"><div class="signal-chip">"Assinados?" muda para True → HubSpot aciona WF4</div></div>
+
+  <div class="step-row">
+    <div class="step-aside">
+      <div class="step-badge badge-hs">4</div>
+      <div class="step-type-lbl lbl-hs">HubSpot</div>
+      <div class="step-vline"></div>
+    </div>
+    <div class="step-body">
+      <div class="card card-white">
+        <div class="card-stripe stripe-rubi"></div>
+        <div class="card-head">
+          <div>
+            <div class="card-id">WF Ticket · ID 1723227507</div>
+            <div class="card-title">Assinado → Baixando Documentos do ClickSign</div>
+          </div>
+          <div class="card-status status-hs">● Ativo</div>
+        </div>
+        <div class="card-body">
+          <div class="col-label">Gatilho</div>
+          <div class="trig-box">
+            <div class="trig-text">Ticket em status "Aguardando Assinatura" AND <strong>Contratos de Negócios Associados Assinados? = True</strong></div>
+          </div>
+          <div class="col-label" style="margin-top:12px;">O que acontece</div>
+          <div class="actions-list">
+            <div class="action"><div class="act-num num-rubi">1</div><span>Status do Ticket → <strong>"Assinados - Baixando Documentos"</strong></span></div>
+          </div>
+        </div>
+        <div class="card-props">
+          <span class="props-lbl">Propriedades:</span>
+          <span class="prop-tag prop-hs">Contratos de Negócios Associados Assinados?</span>
+          <span class="prop-tag prop-hs">Status do Ticket</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="signal-row"><div class="signal-chip">Status = "Assinados - Baixando Documentos" → n8n baixa e envia ao Drive</div></div>
+
+  <div class="step-row">
+    <div class="step-aside">
+      <div class="step-badge badge-n8n">n8n</div>
+      <div class="step-type-lbl lbl-n8n">n8n · 4/5</div>
+      <div class="step-vline"></div>
+    </div>
+    <div class="step-body">
+      <div class="card card-warm">
+        <div class="card-stripe stripe-solar"></div>
+        <div class="card-head">
+          <div>
+            <div class="card-id">Integração n8n · Handoff 4/5</div>
+            <div class="card-title">Download do ClickSign e Upload no Google Drive</div>
+          </div>
+          <div class="card-status status-n8n">🔶 n8n</div>
+        </div>
+        <div class="card-body">
+          <div class="actions-list">
+            <div class="action"><div class="act-num num-solar">1</div><span>Baixa os documentos assinados do ClickSign</span></div>
+            <div class="action"><div class="act-num num-solar">2</div><span>Faz upload no Google Drive na pasta correspondente</span></div>
+            <div class="action"><div class="act-num num-solar">3</div><span>Escreve o link do Drive no ticket: <strong>Link - Anexos do Drive</strong></span></div>
+          </div>
+        </div>
+        <div class="card-props">
+          <span class="props-lbl">Sinal de saída:</span>
+          <span class="prop-tag prop-n8n">Link - Anexos do Drive (preenchido)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="signal-row"><div class="signal-chip">"Link - Anexos do Drive" preenchido → HubSpot aciona WF5</div></div>
+
+  <div class="step-row">
+    <div class="step-aside">
+      <div class="step-badge badge-hs">5</div>
+      <div class="step-type-lbl lbl-hs">HubSpot</div>
+      <div class="step-vline"></div>
+    </div>
+    <div class="step-body">
+      <div class="card card-white">
+        <div class="card-stripe stripe-rubi"></div>
+        <div class="card-head">
+          <div>
+            <div class="card-id">WF Ticket · ID 1726537479</div>
+            <div class="card-title">Drive Preenchido → Cadastro no OPS + Renomeação do Ticket</div>
+          </div>
+          <div class="card-status status-hs">● Ativo</div>
+        </div>
+        <div class="card-body">
+          <div class="col-label">Gatilho</div>
+          <div class="trig-box">
+            <div class="trig-text">Ticket em status "Assinados - Baixando Documentos" AND <strong>Link - Anexos do Drive</strong> preenchido</div>
+          </div>
+          <div class="col-label" style="margin-top:12px;">O que acontece</div>
+          <div class="actions-list">
+            <div class="action"><div class="act-num num-rubi">1</div><span>Status do Ticket → <strong>"Cadastro no OPS"</strong></span></div>
+            <div class="action"><div class="act-num num-rubi">2</div><span>Zera a flag de problemas em documentos (reset para próximo ciclo)</span></div>
+            <div class="action"><div class="act-num num-rubi">3</div><span>Renomeia o ticket com formato padronizado: <span class="mono">[Tipo de Rateio] · [Gerador] · [ID Usina]</span></span></div>
+          </div>
+        </div>
+        <div class="card-props">
+          <span class="props-lbl">Propriedades:</span>
+          <span class="prop-tag prop-hs">Link - Anexos do Drive</span>
+          <span class="prop-tag prop-hs">Status do Ticket</span>
+          <span class="prop-tag prop-hs">subject (nome do ticket)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="signal-row"><div class="signal-chip">Status = "Cadastro no OPS" → n8n executa o cadastro</div></div>
+
+  <div class="step-row">
+    <div class="step-aside">
+      <div class="step-badge badge-n8n">n8n</div>
+      <div class="step-type-lbl lbl-n8n">n8n · 5/5</div>
+      <div class="step-vline"></div>
+    </div>
+    <div class="step-body">
+      <div class="card card-warm">
+        <div class="card-stripe stripe-solar"></div>
+        <div class="card-head">
+          <div>
+            <div class="card-id">Integração n8n · Handoff 5/5</div>
+            <div class="card-title">Cadastro do Cliente e Negócio no Sistema OPS</div>
+          </div>
+          <div class="card-status status-n8n">🔶 n8n</div>
+        </div>
+        <div class="card-body">
+          <div class="actions-list">
+            <div class="action"><div class="act-num num-solar">1</div><span>Coleta dados consolidados do ticket e dos negócios associados</span></div>
+            <div class="action"><div class="act-num num-solar">2</div><span>Cadastra o cliente e o negócio no sistema OPS interno</span></div>
+            <div class="action"><div class="act-num num-solar">3</div><span>Escreve: <strong>Negócios do Ticket Cadastrados no OPS? = verdadeiro</strong></span></div>
+          </div>
+        </div>
+        <div class="card-props">
+          <span class="props-lbl">Sinal de saída:</span>
+          <span class="prop-tag prop-n8n">Negócios do Ticket Cadastrados no OPS? = verdadeiro</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="signal-row"><div class="signal-chip">"Cadastrados no OPS?" muda para verdadeiro → HubSpot aciona WF6 (último)</div></div>
+
+  <div class="step-row">
+    <div class="step-aside">
+      <div class="step-badge badge-hs">6</div>
+      <div class="step-type-lbl lbl-hs">HubSpot</div>
+      <div class="step-vline hide"></div>
+    </div>
+    <div class="step-body">
+      <div class="card card-white">
+        <div class="card-stripe stripe-rubi"></div>
+        <div class="card-head">
+          <div>
+            <div class="card-id">WF Ticket · ID 1756086655</div>
+            <div class="card-title">OPS Cadastrado → Aberto (Rateio) + Deal avança para Em Fluxo de Rateio</div>
+          </div>
+          <div class="card-status status-hs">● Ativo</div>
+        </div>
+        <div class="card-body">
+          <div class="col-label">Gatilho</div>
+          <div class="trig-box">
+            <div class="trig-text">Ticket em status "Cadastro no OPS" AND <strong>Negócios do Ticket Cadastrados no OPS? = verdadeiro</strong></div>
+          </div>
+          <div class="col-label" style="margin-top:12px;">O que acontece</div>
+          <div class="actions-list">
+            <div class="action"><div class="act-num num-rubi">1</div><span>Status do Ticket → <strong>"Aberto (Rateio)"</strong></span></div>
+            <div class="action"><div class="act-num num-rubi">2</div><span>Aguarda <strong>1 minuto</strong> (delay anti-condição-de-corrida)</span></div>
+            <div class="action"><div class="act-num num-rubi">3</div><span>No negócio associado: Etapa → <strong>Em Fluxo de Rateio</strong> (<span class="mono">1119360531</span>)</span></div>
+          </div>
+        </div>
+        <div class="card-alert alert-warn">
+          <div class="alert-icon">⚠️</div>
+          <div class="alert-text">O delay de 1 minuto é intencional para evitar condição de corrida entre a escrita do n8n e a leitura do HubSpot. O vínculo ticket ↔ negócio é obrigatório — sem ele, o deal <strong>não avança para Em Fluxo de Rateio</strong> e ninguém é notificado.</div>
+        </div>
+        <div class="card-props">
+          <span class="props-lbl">Propriedades:</span>
+          <span class="prop-tag prop-hs">Negócios do Ticket Cadastrados no OPS?</span>
+          <span class="prop-tag prop-hs">Status do Ticket</span>
+          <span class="prop-tag prop-hs">dealstage (negócio associado)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     FASE 8 — EM FLUXO DE RATEIO
+══════════════════════════════════════════ -->
+<div class="phase-container">
+  <div class="sec-head">
+    <div class="sec-icon">8</div>
+    <div class="sec-title">Fase 8 — Em Fluxo de Rateio</div>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="end-node">
+    <div class="node-emoji">⚡</div>
+    <div class="node-body">
+      <div class="node-label">Fim do Ciclo Documentado · Pipeline: Fluxo de Alocação</div>
+      <div class="node-title">Deal em "Em Fluxo de Rateio" — Ticket em "Aberto (Rateio)"</div>
+      <div class="node-desc">Estágio final deste ciclo. O deal está em <strong style="color:#ff6a1a;">Em Fluxo de Rateio (1119360531)</strong> e o ticket em <strong style="color:#ff6a1a;">Aberto (Rateio)</strong>. O processo de rateio mensal ocorre a partir daqui, fora do escopo deste documento.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TROUBLESHOOTING
+══════════════════════════════════════════ -->
+<div class="phase-container">
+  <div class="sec-head">
+    <div class="sec-icon">⚠</div>
+    <div class="sec-title">Troubleshooting — Problemas que Travam o Fluxo</div>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="trouble-grid">
+
+    <div class="t-card tc-crit">
+      <div class="t-top">
+        <div class="t-icon-wrap wrap-crit">🚨</div>
+        <div class="t-title">Campo "existe_pendencia" não preenchido</div>
+      </div>
+      <div class="t-text">Analista conclui a análise mas não preenche <strong>existe_pendencia_para_validacao_comercial</strong>. Nenhum WF subsequente é acionado. Deal fica parado em "Para Validação" indefinidamente, sem alerta.</div>
+    </div>
+
+    <div class="t-card tc-crit">
+      <div class="t-top">
+        <div class="t-icon-wrap wrap-crit">🚨</div>
+        <div class="t-title">Case-sensitive no campo "Assinados?"</div>
+      </div>
+      <div class="t-text">O n8n deve escrever <strong>True</strong> com T maiúsculo. Se escrever <strong>true</strong> em minúsculas, o WF4 não reconhece o match e o ticket fica preso em "Aguardando Assinatura" para sempre.</div>
+    </div>
+
+    <div class="t-card tc-crit">
+      <div class="t-top">
+        <div class="t-icon-wrap wrap-crit">🚨</div>
+        <div class="t-title">n8n offline ou com erro</div>
+      </div>
+      <div class="t-text">Nenhum dos 6 WFs de ticket aciona o n8n diretamente. É o n8n quem monitora os status. Se o n8n cair, o processo para silenciosamente — o HubSpot não percebe nem alerta ninguém.</div>
+    </div>
+
+    <div class="t-card tc-warn">
+      <div class="t-top">
+        <div class="t-icon-wrap wrap-warn">⚠️</div>
+        <div class="t-title">Valor de pendência fora da lista</div>
+      </div>
+      <div class="t-text">O WF3 tem branches fechados. Se o analista digitar texto livre ou usar um valor não mapeado em <strong>pendencia_comercial_validacao</strong>, o deal não cai em nenhum branch e fica parado sem ação e sem notificação.</div>
+    </div>
+
+    <div class="t-card tc-warn">
+      <div class="t-top">
+        <div class="t-icon-wrap wrap-warn">⚠️</div>
+        <div class="t-title">Closer não limpa o campo de pendência</div>
+      </div>
+      <div class="t-text">O WF4 (revalidação) exige que <strong>existe_pendencia_para_validacao_comercial</strong> esteja vazia. Se o closer corrigir os dados mas não limpar o campo, o deal fica travado em "Validação Comercial" do pipeline original.</div>
+    </div>
+
+    <div class="t-card tc-warn">
+      <div class="t-top">
+        <div class="t-icon-wrap wrap-warn">⚠️</div>
+        <div class="t-title">Campos de alocação incompletos</div>
+      </div>
+      <div class="t-text">Se qualquer um dos 4 campos (<strong>nome_da_usina</strong>, <strong>id_gerador_alocacao_e_rateio</strong>, <strong>id_usina_alocacao_e_rateio</strong>, <strong>gerador_alocacao</strong>) estiver vazio, o WF de Alocação não avança o deal para Cobrança. Nenhum alerta é emitido.</div>
+    </div>
+
+    <div class="t-card tc-warn">
+      <div class="t-top">
+        <div class="t-icon-wrap wrap-warn">⚠️</div>
+        <div class="t-title">Ticket sem vínculo com o negócio</div>
+      </div>
+      <div class="t-text">Os WFs Ticket 1 e 6 precisam do vínculo ticket ↔ negócio para atualizar a etapa do deal. Sem o vínculo, a ação é executada no HubSpot sem erro, mas o negócio não avança.</div>
+    </div>
+
+    <div class="t-card tc-info">
+      <div class="t-top">
+        <div class="t-icon-wrap wrap-info">🐛</div>
+        <div class="t-title">Branch AlugSol duplicado no WF1</div>
+      </div>
+      <div class="t-text">No Fluxo de Validação 1, o branch do Marketplace tem dois caminhos com o valor <strong>AlugSol</strong>, tornando o path de Gabriela Bruno inacessível. Deals AlugSol do Marketplace sempre seguem para Joao Vitor/Leticia Ananda. Revisar o workflow.</div>
+    </div>
+
+    <div class="t-card tc-info">
+      <div class="t-top">
+        <div class="t-icon-wrap wrap-info">ℹ️</div>
+        <div class="t-title">Analista nunca é sobrescrito</div>
+      </div>
+      <div class="t-text">Em nenhum dos 5 workflows de validação o campo <strong>analista_de_validacao_comercial</strong> é sobrescrito. Se um deal já tiver um analista de rodada anterior e precisar de reatribuição, isso não acontece automaticamente.</div>
+    </div>
+
+    <div class="t-card tc-info">
+      <div class="t-top">
+        <div class="t-icon-wrap wrap-info">ℹ️</div>
+        <div class="t-title">Responsável fixo (hardcoded) nos WFs de ticket</div>
+      </div>
+      <div class="t-text">O WF Ticket 1 tem um usuário fixo para atribuição de ticket e negócio. Se esse usuário for desativado no HubSpot, as atribuições falham silenciosamente sem erro visível.</div>
+    </div>
+
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-mark"><div class="footer-mark-inner"></div></div>
+      <div>
+        <div class="footer-name">Sunne</div>
+        <div class="footer-sub">Documentação Interna · Operações</div>
+      </div>
+    </div>
+    <div class="footer-text">
+      Versão 1.0 · Março de 2026<br/>
+      Gerado por <span>Inner AI</span> com base nos workflows exportados do HubSpot
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

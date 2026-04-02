@@ -1,535 +1,565 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ciclo Operacional Completo — Sunne v2.1</title>
-<style>
-  /*
-    ATENÇÃO: As fontes 'Decima Mono Cyr', 'Redonda' e 'Redonda Compressed'
-    não são do Google Fonts. Para que elas funcionem, você precisará
-    importá-las via @font-face no seu CSS ou garantir que estejam
-    disponíveis no ambiente onde o HTML será renderizado.
-    Aqui, estou usando fallbacks genéricos para garantir a compatibilidade.
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ciclo Operacional Sunne - Detalhado</title>
+  <link href="https://fonts.googleapis.com/css2?family=Redonda+Compressed:wght@700&family=Redonda:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* ─── VARIÁVEIS DE CORES SUNNE ─── */
+    :root {
+      --sunne-laranja-solar: #FF7000;
+      --sunne-laranja-solar-escuro: #E65100;
+      --sunne-turquesa: #00C8C8;
+      --sunne-turquesa-escuro: #00A0A0;
+      --sunne-amarelo-dourado: #FAB200;
+      --sunne-amarelo-dourado-escuro: #D49B00;
+      --sunne-magenta: #FF365E;
+      --sunne-magenta-escuro: #CC2B4B;
+      --sunne-verde-lima: #A7FF2C;
+      --sunne-verde-lima-escuro: #87CC23;
 
-    Exemplo de como você precisaria declarar as fontes (ajuste os caminhos):
+      /* Cores base do tema */
+      --bg: #1A1A1A; /* Fundo escuro */
+      --surface: #242424; /* Superfície de cards/elementos */
+      --surface2: #2D2D2D; /* Superfície mais clara para headers */
+      --border: #3A3A3A; /* Linhas de borda */
+      --text: #E0E0E0; /* Texto principal claro */
+      --text-muted: #A0A0A0; /* Texto secundário/fraco */
+      --text-dim: #707070; /* Texto muito fraco */
+
+      /* Cores de destaque (baseadas nas cores Sunne) */
+      --accent-primary: var(--sunne-laranja-solar);
+      --accent-success: var(--sunne-turquesa);
+      --accent-warning: var(--sunne-amarelo-dourado);
+      --accent-error: var(--sunne-magenta);
+      --n8n: #663399; /* Cor específica para n8n */
+    }
+
+    /* ─── FONTES PERSONALIZADAS ─── */
     @font-face {
       font-family: 'Decima Mono Cyr';
-      src: url('caminho/para/DecimaMonoCyr-Regular.woff2') format('woff2'),
-           url('caminho/para/DecimaMonoCyr-Regular.woff') format('woff');
+      src: url('https://raw.githubusercontent.com/sunne-br/docs/main/fonts/DecimaMonoCyr-Regular.woff2') format('woff2'),
+           url('https://raw.githubusercontent.com/sunne-br/docs/main/fonts/DecimaMonoCyr-Regular.woff') format('woff');
       font-weight: normal;
       font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Redonda';
+      src: url('https://raw.githubusercontent.com/sunne-br/docs/main/fonts/Redonda-Regular.woff2') format('woff2'),
+           url('https://raw.githubusercontent.com/sunne-br/docs/main/fonts/Redonda-Regular.woff') format('woff');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Redonda';
+      src: url('https://raw.githubusercontent.com/sunne-br/docs/main/fonts/Redonda-Medium.woff2') format('woff2'),
+           url('https://raw.githubusercontent.com/sunne-br/docs/main/fonts/Redonda-Medium.woff') format('woff');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Redonda';
+      src: url('https://raw.githubusercontent.com/sunne-br/docs/main/fonts/Redonda-Bold.woff2') format('woff2'),
+           url('https://raw.githubusercontent.com/sunne-br/docs/main/fonts/Redonda-Bold.woff') format('woff');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
     }
     @font-face {
       font-family: 'Redonda Compressed';
-      src: url('caminho/para/RedondaCompressed-Bold.woff2') format('woff2'),
-           url('caminho/para/RedondaCompressed-Bold.woff') format('woff');
+      src: url('https://raw.githubusercontent.com/sunne-br/docs/main/fonts/RedondaCompressed-Bold.woff2') format('woff2'),
+           url('https://raw.githubusercontent.com/sunne-br/docs/main/fonts/RedondaCompressed-Bold.woff') format('woff');
       font-weight: bold;
       font-style: normal;
+      font-display: swap;
     }
-    @font-face {
-      font-family: 'Redonda';
-      src: url('caminho/para/Redonda-Regular.woff2') format('woff2'),
-           url('caminho/para/Redonda-Regular.woff') format('woff');
-      font-weight: normal;
-      font-style: normal;
+
+    /* ─── RESET E ESTILOS GERAIS ─── */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-    @font-face {
-      font-family: 'Redonda';
-      src: url('caminho/para/Redonda-Medium.woff2') format('woff2'),
-           url('caminho/para/Redonda-Medium.woff') format('woff');
+    body {
+      font-family: 'Redonda', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    a {
+      color: var(--accent-primary);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    strong {
+      font-weight: 700;
+    }
+    code {
+      font-family: 'Decima Mono Cyr', monospace;
+      background-color: var(--surface2);
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    ul {
+      list-style-type: disc;
+      margin-left: 20px;
+      margin-bottom: 15px;
+    }
+    ol {
+      list-style-type: decimal;
+      margin-left: 20px;
+      margin-bottom: 15px;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+
+    /* ─── HEADER ─── */
+    .site-header {
+      background-color: var(--surface);
+      padding: 20px 40px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .logo {
+      font-family: 'Redonda Compressed', sans-serif;
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--accent-primary);
+    }
+    .version-badge {
+      background-color: var(--accent-primary);
+      color: var(--bg);
+      padding: 4px 10px;
+      border-radius: 5px;
+      font-family: 'Decima Mono Cyr', monospace;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    /* ─── NAVEGAÇÃO POR ABAS ─── */
+    .nav-tabs {
+      display: flex;
+      justify-content: flex-start;
+      background-color: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      position: sticky;
+      top: 70px; /* Altura do header */
+      z-index: 999;
+    }
+    .nav-tab {
+      padding: 14px 20px;
+      color: var(--text-muted);
+      font-family: 'Redonda', sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s ease;
+    }
+    .nav-tab:hover {
+      color: var(--text);
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    .nav-tab.active {
+      color: var(--accent-primary);
+      border-bottom-color: var(--accent-primary);
       font-weight: 500;
-      font-style: normal;
     }
-  */
 
-  :root {
-    /* Cores Institucionais Sunne */
-    --sunne-rubi: #32001a;
-    --sunne-laranja-solar: #ff6a1a;
+    /* ─── CONTEÚDO PRINCIPAL ─── */
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+    .section {
+      display: none;
+      padding: 20px 0;
+    }
+    .section.active {
+      display: block;
+    }
 
-    /* Cores Secundárias Sunne */
-    --sunne-magenta: #ff365e; /* Unidade Assina - Usado para Crítico/Erro */
-    --sunne-amarelo-dourado: #fab200; /* Unidade Geração - Usado para Alerta/Atenção */
-    --sunne-turquesa: #69e0cf; /* Unidade Licenciados - Usado para Sucesso/Destaque */
-    --sunne-bege-pessego: #f2c7a3; /* Unidade Comunidade */
+    /* ─── HERO SECTION (VISÃO GERAL) ─── */
+    .hero {
+      background: linear-gradient(135deg, var(--surface), var(--surface2));
+      border-radius: 12px;
+      padding: 40px;
+      margin-bottom: 40px;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+    .hero-title {
+      font-family: 'Redonda Compressed', sans-serif;
+      font-size: 42px;
+      font-weight: bold;
+      color: var(--accent-primary);
+      margin-bottom: 15px;
+      line-height: 1.2;
+    }
+    .hero-sub {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 800px;
+      margin: 0 auto 30px auto;
+    }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+    .stat {
+      background-color: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 15px 25px;
+      min-width: 150px;
+    }
+    .stat-num {
+      font-family: 'Decima Mono Cyr', monospace;
+      font-size: 32px;
+      font-weight: bold;
+      color: var(--sunne-turquesa);
+      margin-bottom: 5px;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
 
-    /* Cores de Base (adaptadas para tema escuro Sunne) */
-    --bg: #1a000d; /* Fundo escuro, próximo ao Rubi */
-    --surface: #32001a; /* Rubi */
-    --surface2: #4d0029; /* Rubi mais claro para contraste */
-    --border: #660033; /* Borda mais escura */
-    --border-light: #800040; /* Borda mais clara */
-    --text: #f2c7a3; /* Bege Pêssego para texto principal */
-    --text-muted: #e0b08a; /* Bege Pêssego mais escuro */
-    --text-dim: #b38f6b; /* Bege Pêssego ainda mais escuro */
+    /* ─── PHASE GRID (VISÃO GERAL) ─── */
+    .phase-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .phase-card {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 25px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .phase-card:hover {
+      border-color: var(--accent-primary);
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+    .phase-card.highlight {
+      border-color: var(--accent-success);
+      box-shadow: 0 0 15px rgba(0, 200, 200, 0.3);
+    }
+    .phase-number {
+      font-family: 'Decima Mono Cyr', monospace;
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+    .phase-name {
+      font-family: 'Redonda', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .phase-type {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .phase-dot {
+      position: absolute;
+      top: 25px;
+      right: 25px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .new-badge {
+      background-color: var(--sunne-verde-lima);
+      color: var(--bg);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: bold;
+      margin-left: 8px;
+      vertical-align: middle;
+      font-family: 'Decima Mono Cyr', monospace;
+    }
 
-    /* Mapeamento para as cores de acento do layout original */
-    --accent-primary: var(--sunne-laranja-solar); /* Laranja Solar para destaque principal */
-    --accent-success: var(--sunne-turquesa); /* Turquesa para sucesso */
-    --accent-error: var(--sunne-magenta); /* Magenta para erro/crítico */
-    --accent-warning: var(--sunne-amarelo-dourado); /* Amarelo Dourado para aviso */
-    --accent-info: var(--sunne-bege-pessego); /* Bege Pêssego para informação */
+    /* ─── WORKFLOW BLOCK ─── */
+    .wf-block {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .wf-header {
+      background: var(--surface2);
+      padding: 15px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .wf-id {
+      background: var(--accent-primary);
+      color: var(--bg);
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-family: 'Decima Mono Cyr', monospace;
+      font-size: 13px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    .wf-name {
+      font-family: 'Redonda', sans-serif;
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .wf-body {
+      padding: 20px;
+    }
+    .trigger-box {
+      background: rgba(0, 200, 200, 0.1); /* Turquesa com transparência */
+      border: 1px solid rgba(0, 200, 200, 0.3);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      color: var(--sunne-turquesa);
+      font-size: 14px;
+    }
+    .trigger-label {
+      font-family: 'Decima Mono Cyr', monospace;
+      font-weight: bold;
+      color: var(--sunne-turquesa-escuro);
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+    .action-flow {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .action-node {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 15px;
+      font-size: 14px;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      min-width: 120px;
+      text-align: left;
+    }
+    .action-node .label {
+      font-family: 'Decima Mono Cyr', monospace;
+      font-weight: bold;
+      color: var(--text-muted);
+      margin-bottom: 3px;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+    .action-arrow {
+      font-size: 24px;
+      color: var(--text-dim);
+      margin: 0 5px;
+      flex-shrink: 0;
+    }
+    .action-node.terminal {
+      background: var(--accent-primary);
+      color: var(--bg);
+      border-color: var(--accent-primary);
+    }
+    .action-node.terminal .label {
+      color: rgba(0,0,0,0.5);
+    }
+    .action-node[style*="background: var(--n8n)"] {
+      background: var(--n8n) !important;
+      color: var(--bg) !important;
+      border-color: var(--n8n) !important;
+    }
+    .action-node[style*="background: var(--n8n)"] .label {
+      color: rgba(255,255,255,0.5) !important;
+    }
 
-    /* Cores específicas de integração */
-    --n8n: #ff6d00; /* Mantido, mas pode ser ajustado se necessário */
-    --hubspot: #ff7a59; /* Mantido, mas pode ser ajustado se necessário */
-  }
+    /* ─── PROPRIEDADES TABLE ─── */
+    .props-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 24px;
+    }
+    .props-table th, .props-table td {
+      border: 1px solid var(--border);
+      padding: 12px 15px;
+      text-align: left;
+      font-size: 14px;
+    }
+    .props-table th {
+      background-color: var(--surface2);
+      color: var(--text-muted);
+      font-family: 'Redonda', sans-serif;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .props-table td {
+      background-color: var(--surface);
+      color: var(--text);
+    }
+    .props-table td:first-child {
+      font-family: 'Decima Mono Cyr', monospace;
+      font-weight: bold;
+      color: var(--accent-primary);
+    }
+    .props-table tr:nth-child(even) td {
+      background-color: #202020; /* Levemente diferente para zebra-striping */
+    }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+    /* ─── ALERTS ─── */
+    .alert {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    .alert.info {
+      background: rgba(0, 200, 200, 0.1); /* Turquesa com transparência */
+      border: 1px solid rgba(0, 200, 200, 0.3);
+      color: var(--accent-success); /* Turquesa */
+    }
+    .alert.warning {
+      background: rgba(250,178,0,0.1); /* Amarelo Dourado com transparência */
+      border: 1px solid rgba(250,178,0,0.3);
+      color: var(--accent-warning); /* Amarelo Dourado */
+    }
+    .alert.error {
+      background: rgba(255,54,94,0.1); /* Magenta com transparência */
+      border: 1px solid rgba(255,54,94,0.3);
+      color: var(--accent-error); /* Magenta */
+    }
+    .alert-icon { font-size: 18px; line-height: 1; flex-shrink: 0; }
+    .alert-title {
+      font-weight: 500;
+      margin-bottom: 4px;
+      font-family: 'Redonda', sans-serif; /* Corpo de texto */
+    }
+    .alert code {
+      font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+      background: rgba(0,0,0,0.2);
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: inherit;
+    }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    /* Fontes Sunne - Fallbacks genéricos */
-    font-family: 'Redonda', sans-serif; /* Corpo de texto */
-    font-size: 14px;
-    line-height: 1.6;
-    min-height: 100vh;
-  }
+    /* ─── CODE BLOCK ─── */
+    .code-block {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .code-header {
+      background: var(--surface2);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .code-header .copy-btn {
+      background: var(--accent-primary); /* Laranja Solar */
+      color: var(--bg); /* Texto escuro sobre Laranja Solar */
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Redonda', sans-serif; /* Corpo de texto */
+      font-size: 11px;
+      transition: background 0.2s;
+    }
+    .code-header .copy-btn:hover {
+      background: var(--sunne-laranja-solar-escuro); /* Laranja Solar mais intenso */
+      opacity: 0.9;
+    }
+    .code-content {
+      background: var(--bg);
+      padding: 20px;
+      font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+      font-size: 12px;
+      line-height: 1.5;
+      white-space: pre-wrap; /* Para quebras de linha no Mermaid */
+      word-break: break-word;
+      color: var(--text);
+    }
 
-  /* ─── HEADER ─── */
-  .site-header {
-    border-bottom: 1px solid var(--border);
-    padding: 24px 40px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--surface);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .logo {
-    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
-    font-size: 13px;
-    color: var(--accent-primary);
-    letter-spacing: 0.05em;
-  }
-  .version-badge {
-    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
-    font-size: 11px;
-    background: rgba(255,106,26,0.15); /* Laranja Solar com transparência */
-    border: 1px solid rgba(255,106,26,0.3);
-    color: var(--accent-primary);
-    padding: 3px 10px;
-    border-radius: 4px;
-  }
+    /* ─── SECTION HEADINGS ─── */
+    .section-title {
+      font-family: 'Redonda Compressed', sans-serif; /* Fonte para títulos */
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--accent-primary); /* Laranja Solar */
+      margin-bottom: 8px;
+    }
+    .section-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
 
-  /* ─── NAV TABS ─── */
-  .nav-tabs {
-    display: flex;
-    gap: 2px;
-    padding: 0 40px;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
-    overflow-x: auto;
-  }
-  .nav-tab {
-    padding: 12px 18px;
-    font-size: 12px;
-    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
-    color: var(--text-muted);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    white-space: nowrap;
-    transition: all 0.2s;
-    user-select: none;
-  }
-  .nav-tab:hover { color: var(--text); }
-  .nav-tab.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); }
-
-  /* ─── LAYOUT ─── */
-  .container { max-width: 1100px; margin: 0 auto; padding: 40px; }
-
-  /* ─── SECTIONS ─── */
-  .section { display: none; }
-  .section.active { display: block; }
-
-  /* ─── HERO ─── */
-  .hero {
-    border: 1px solid var(--border);
-    background: var(--surface);
-    border-radius: 8px;
-    padding: 36px;
-    margin-bottom: 32px;
-    position: relative;
-    overflow: hidden;
-  }
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    /* Gradiente com cores Sunne */
-    background: linear-gradient(90deg, var(--sunne-laranja-solar), var(--sunne-magenta), var(--sunne-turquesa));
-  }
-  .hero-title {
-    font-family: 'Redonda Compressed', sans-serif; /* Fonte para títulos */
-    font-size: 24px;
-    font-weight: bold; /* Redonda Compressed é Bold */
-    margin-bottom: 8px;
-    color: var(--text);
-  }
-  .hero-sub {
-    color: var(--text-muted);
-    font-size: 13px;
-    margin-bottom: 24px;
-  }
-  .hero-stats {
-    display: flex;
-    gap: 32px;
-    flex-wrap: wrap;
-  }
-  .stat { }
-  .stat-num {
-    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
-    font-size: 28px;
-    font-weight: 600;
-    color: var(--accent-primary);
-    line-height: 1;
-  }
-  .stat-label {
-    font-size: 11px;
-    color: var(--text-dim);
-    margin-top: 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-
-  /* ─── NEW BADGE ─── */
-  .new-badge {
-    display: inline-block;
-    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
-    font-size: 10px;
-    background: rgba(105,224,207,0.15); /* Turquesa com transparência */
-    border: 1px solid rgba(105,224,207,0.4);
-    color: var(--accent-success);
-    padding: 2px 8px;
-    border-radius: 3px;
-    vertical-align: middle;
-    margin-left: 8px;
-    animation: pulse-green 2s infinite;
-  }
-  @keyframes pulse-green {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
-  }
-
-  /* ─── PHASE CARDS ─── */
-  .phase-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 32px;
-  }
-  @media (max-width: 700px) { .phase-grid { grid-template-columns: 1fr; } }
-
-  .phase-card {
-    border: 1px solid var(--border);
-    background: var(--surface);
-    border-radius: 8px;
-    padding: 20px;
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-    overflow: hidden;
-  }
-  .phase-card:hover {
-    border-color: var(--border-light);
-    background: var(--surface2);
-  }
-  .phase-card.highlight {
-    border-color: rgba(105,224,207,0.4); /* Turquesa com transparência */
-    background: rgba(105,224,207,0.04);
-  }
-  .phase-number {
-    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
-    font-size: 11px;
-    color: var(--text-dim);
-    margin-bottom: 6px;
-  }
-  .phase-name {
-    font-family: 'Redonda', sans-serif; /* Corpo de texto */
-    font-weight: 500;
-    margin-bottom: 4px;
-    font-size: 14px;
-  }
-  .phase-type {
-    font-size: 11px;
-    color: var(--text-muted);
-  }
-  .phase-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    position: absolute;
-    top: 20px; right: 20px;
-  }
-
-  /* ─── WORKFLOW BLOCK ─── */
-  .wf-block {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    margin-bottom: 24px;
-    overflow: hidden;
-  }
-  .wf-header {
-    background: var(--surface);
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border-bottom: 1px solid var(--border);
-  }
-  .wf-id {
-    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
-    font-size: 11px;
-    color: var(--text-dim);
-    background: var(--bg);
-    border: 1px solid var(--border);
-    padding: 2px 8px;
-    border-radius: 3px;
-  }
-  .wf-name {
-    font-family: 'Redonda', sans-serif; /* Corpo de texto */
-    font-weight: 500;
-    font-size: 13px;
-    flex: 1;
-  }
-  .wf-body { padding: 20px; background: var(--bg); }
-
-  /* ─── TRIGGER BOX ─── */
-  .trigger-box {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent-primary); /* Laranja Solar */
-    border-radius: 0 6px 6px 0;
-    padding: 14px 16px;
-    margin-bottom: 16px;
-    font-size: 13px;
-  }
-  .trigger-label {
-    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
-    font-size: 10px;
-    color: var(--accent-primary); /* Laranja Solar */
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 6px;
-  }
-
-  /* ─── CONDITION LIST ─── */
-  .condition-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-bottom: 16px;
-  }
-  .condition-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    font-size: 12px;
-    padding: 8px 12px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 5px;
-  }
-  .condition-item .prop {
-    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
-    color: var(--sunne-turquesa); /* Turquesa */
-    font-size: 11px;
-    flex-shrink: 0;
-  }
-  .condition-item .val {
-    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
-    font-size: 11px;
-    color: var(--sunne-amarelo-dourado); /* Amarelo Dourado */
-  }
-  .condition-item .desc { color: var(--text-muted); }
-  .condition-icon { flex-shrink: 0; margin-top: 1px; }
-
-  /* ─── ACTION FLOW ─── */
-  .action-flow {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
-  }
-  .action-node {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 10px 14px;
-    font-size: 12px;
-    text-align: center;
-    min-width: 120px;
-  }
-  .action-node .label {
-    font-size: 10px;
-    color: var(--text-muted);
-    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
-    margin-bottom: 3px;
-    text-transform: uppercase;
-  }
-  .action-arrow {
-    padding: 0 8px;
-    color: var(--text-dim);
-    font-size: 16px;
-  }
-  .action-node.terminal {
-    border-color: rgba(105,224,207,0.4); /* Turquesa com transparência */
-    background: rgba(105,224,207,0.06);
-  }
-  .action-node.terminal .label { color: var(--accent-success); }
-
-  /* ─── PROPERTIES TABLE ─── */
-  .props-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-    margin-bottom: 20px;
-  }
-  .props-table th {
-    background: var(--surface2);
-    border-bottom: 1px solid var(--border-light);
-    padding: 10px 12px;
-    text-align: left;
-    color: var(--text-muted);
-    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
-    font-weight: normal;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .props-table td {
-    border-bottom: 1px solid var(--border);
-    padding: 10px 12px;
-    vertical-align: top;
-  }
-  .props-table tr:last-child td { border-bottom: none; }
-  .props-table td:first-child {
-    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
-    color: var(--accent-primary); /* Laranja Solar */
-    white-space: nowrap;
-  }
-  .props-table td:nth-child(2) { color: var(--text-muted); }
-  .props-table td:nth-child(3) {
-    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
-    color: var(--sunne-amarelo-dourado); /* Amarelo Dourado */
-  }
-
-  /* ─── ALERTS ─── */
-  .alert {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 16px 20px;
-    border-radius: 8px;
-    margin-bottom: 16px;
-    font-size: 13px;
-  }
-  .alert.info {
-    background: rgba(242,199,163,0.1); /* Bege Pêssego com transparência */
-    border: 1px solid rgba(242,199,163,0.3);
-    color: var(--accent-info); /* Bege Pêssego */
-  }
-  .alert.warning {
-    background: rgba(250,178,0,0.1); /* Amarelo Dourado com transparência */
-    border: 1px solid rgba(250,178,0,0.3);
-    color: var(--accent-warning); /* Amarelo Dourado */
-  }
-  .alert.error {
-    background: rgba(255,54,94,0.1); /* Magenta com transparência */
-    border: 1px solid rgba(255,54,94,0.3);
-    color: var(--accent-error); /* Magenta */
-  }
-  .alert-icon { font-size: 18px; line-height: 1; flex-shrink: 0; }
-  .alert-title {
-    font-weight: 500;
-    margin-bottom: 4px;
-    font-family: 'Redonda', sans-serif; /* Corpo de texto */
-  }
-  .alert code {
-    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
-    background: rgba(0,0,0,0.2);
-    padding: 2px 6px;
-    border-radius: 3px;
-    color: inherit;
-  }
-
-  /* ─── CODE BLOCK ─── */
-  .code-block {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    margin-bottom: 24px;
-    overflow: hidden;
-  }
-  .code-header {
-    background: var(--surface2);
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
-    font-size: 12px;
-    color: var(--text-muted);
-  }
-  .code-header .copy-btn {
-    background: var(--accent-primary); /* Laranja Solar */
-    color: var(--bg); /* Texto escuro sobre Laranja Solar */
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-family: 'Redonda', sans-serif; /* Corpo de texto */
-    font-size: 11px;
-    transition: background 0.2s;
-  }
-  .code-header .copy-btn:hover {
-    background: var(--sunne-laranja-solar); /* Laranja Solar mais intenso */
-    opacity: 0.9;
-  }
-  .code-content {
-    background: var(--bg);
-    padding: 20px;
-    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
-    font-size: 12px;
-    line-height: 1.5;
-    white-space: pre-wrap; /* Para quebras de linha no Mermaid */
-    word-break: break-word;
-    color: var(--text);
-  }
-
-  /* ─── SECTION HEADINGS ─── */
-  .section-title {
-    font-family: 'Redonda Compressed', sans-serif; /* Fonte para títulos */
-    font-size: 28px;
-    font-weight: bold;
-    color: var(--accent-primary); /* Laranja Solar */
-    margin-bottom: 8px;
-  }
-  .section-desc {
-    font-size: 14px;
-    color: var(--text-muted);
-    margin-bottom: 24px;
-  }
-
-  /* ─── FOOTER ─── */
-  .footer {
-    border-top: 1px solid var(--border);
-    padding: 24px 40px;
-    text-align: center;
-    color: var(--text-dim);
-    font-size: 11px;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
-    background: var(--surface);
-  }
-</style>
+    /* ─── FOOTER ─── */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 40px;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 11px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      background: var(--surface);
+    }
+  </style>
 </head>
 <body>
 
@@ -623,22 +653,23 @@
       <span class="wf-name">Validação Comercial - Entrada</span>
     </div>
     <div class="wf-body">
+      <p>Este workflow é o ponto de entrada para a validação comercial de novos negócios. Ele garante que cada deal seja direcionado corretamente para a etapa de validação e que um analista seja atribuído.</p>
       <div class="trigger-box">
         <div class="trigger-label">Gatilho</div>
         Deal muda para a etapa "Validação Comercial" em qualquer pipeline.
       </div>
       <div class="action-flow">
-        <div class="action-node"><div class="label">Condição</div>Já passou por 'Para Validação'?</div>
+        <div class="action-node"><div class="label">Condição</div>Verifica se o deal já passou pela etapa 'Para Validação'.</div>
         <div class="action-arrow">→</div>
-        <div class="action-node"><div class="label">Se Não</div>Move para 'Para Validação'</div>
+        <div class="action-node"><div class="label">Se Não</div>Move o deal para a etapa 'Para Validação' no pipeline de Validação.</div>
         <div class="action-arrow">→</div>
-        <div class="action-node"><div class="label">Ação</div>Atribui analista (JV/LA)</div>
+        <div class="action-node"><div class="label">Ação</div>Atribui um analista (João Vitor / Letícia Ananda) ao deal, seguindo a lógica de rodízio ou pipeline específico.</div>
       </div>
       <div class="alert warning">
         <div class="alert-icon">⚠️</div>
         <div>
           <div class="alert-title">ATENÇÃO · Branch AlugSol duplicado no WF1</div>
-          O path de Gabriela Bruno está inacessível. Todos os deals AlugSol vão para Joao Vitor / Leticia Ananda.
+          O path de Gabriela Bruno está inacessível. Atualmente, todos os deals do tipo AlugSol são direcionados para João Vitor / Letícia Ananda. Isso pode causar sobrecarga ou atrasos se não for corrigido.
         </div>
       </div>
     </div>
@@ -650,12 +681,13 @@
       <span class="wf-name">Rede de Segurança - Atribuição Analista</span>
     </div>
     <div class="wf-body">
+      <p>Este workflow atua como uma rede de segurança, garantindo que nenhum deal fique sem um analista atribuído na etapa crítica de validação.</p>
       <div class="trigger-box">
         <div class="trigger-label">Gatilho</div>
-        Deal em 'Para Validação' sem analista atribuído.
+        Deal em 'Para Validação' sem analista atribuído por um período definido.
       </div>
       <div class="action-flow">
-        <div class="action-node"><div class="label">Ação</div>Atribui analista (JV/LA) por rodízio</div>
+        <div class="action-node"><div class="label">Ação</div>Atribui um analista (João Vitor / Letícia Ananda) por rodízio para garantir que o deal seja processado.</div>
       </div>
     </div>
   </div>
@@ -666,14 +698,15 @@
       <span class="wf-name">Revalidação Comercial</span>
     </div>
     <div class="wf-body">
+      <p>Este workflow é acionado quando um deal precisa ser revalidado comercialmente, geralmente após a correção de pendências.</p>
       <div class="trigger-box">
         <div class="trigger-label">Gatilho</div>
-        Propriedade `existe_pendencia_para_validacao_comercial` está vazia E já passou por 'Para Validação'.
+        A propriedade `existe_pendencia_para_validacao_comercial` está vazia E o deal já passou pela etapa 'Para Validação'.
       </div>
       <div class="action-flow">
-        <div class="action-node"><div class="label">Ação</div>Move para 'Para Validação'</div>
+        <div class="action-node"><div class="label">Ação</div>Move o deal de volta para a etapa 'Para Validação' para uma nova análise.</div>
         <div class="action-arrow">→</div>
-        <div class="action-node"><div class="label">Ação</div>Atribui novo analista</div>
+        <div class="action-node"><div class="label">Ação</div>Atribui um novo analista para garantir uma segunda revisão imparcial.</div>
       </div>
     </div>
   </div>
@@ -684,7 +717,7 @@
 <!-- ══════════════════════════════════════════════ -->
 <section class="section" id="alocacao">
   <div class="section-title">Fase 4-5: Passagem de Bastão & Alocação</div>
-  <div class="section-desc">Processos de transição para o CS e alocação de usinas.</div>
+  <div class="section-desc">Processos de transição para o Customer Success (CS) e alocação de usinas.</div>
 
   <div class="wf-block">
     <div class="wf-header">
@@ -692,22 +725,23 @@
       <span class="wf-name">ID 1653033997</span>
     </div>
     <div class="wf-body">
+      <p>Este workflow gerencia a transição de um deal da equipe comercial para a equipe de Customer Success, direcionando-o para a alocação ou para um fluxo específico de troca de titularidade.</p>
       <div class="trigger-box">
         <div class="trigger-label">Gatilho</div>
-        Deal muda para a etapa 'Concluído' (Sunne Vendas) ou 'Negócio Fechado' (Marketplace/Gestão) ou 'Alocação' (iGreen/Alexandria).
+        Deal muda para a etapa 'Concluído' (Pipeline Sunne Vendas) ou 'Negócio Fechado' (Pipeline Marketplace/Gestão) ou 'Alocação' (Pipeline iGreen/Alexandria).
       </div>
       <div class="action-flow">
-        <div class="action-node"><div class="label">Condição</div>`troca_de_titularidade` é 'true'?</div>
+        <div class="action-node"><div class="label">Condição</div>Verifica se a propriedade `troca_de_titularidade` é 'true'.</div>
         <div class="action-arrow">→</div>
-        <div class="action-node"><div class="label">Se Sim</div>Path de troca de titularidade</div>
+        <div class="action-node"><div class="label">Se Sim</div>O deal segue um path específico para troca de titularidade.</div>
         <div class="action-arrow">→</div>
-        <div class="action-node"><div class="label">Se Não</div>Move para 'Alocação' (Fluxo ACR)</div>
+        <div class="action-node"><div class="label">Se Não</div>Move o deal para a etapa 'Alocação' no Fluxo ACR (Autoconsumo Remoto).</div>
       </div>
       <div class="alert warning">
         <div class="alert-icon">⚠️</div>
         <div>
           <div class="alert-title">ATENÇÃO · Campos de alocação incompletos</div>
-          Se qualquer um dos 4 campos (usina, gerador, IDs) estiver vazio, WF Alocação não avança para Cobrança. Sem alerta.
+          Se qualquer um dos 4 campos de alocação (<code>nome_da_usina</code>, <code>gerador_alocacao</code>, <code>id_usina_alocacao_e_rateio</code>, <code>id_gerador_alocacao_e_rateio</code>) estiver vazio, o Workflow de Alocação não avança para a etapa de Cobrança. **Não há alerta explícito no sistema**, o que pode levar a deals travados.
         </div>
       </div>
     </div>
@@ -727,14 +761,15 @@
       <span class="wf-name">ID 1697798163 - Gerar Contratos</span>
     </div>
     <div class="wf-body">
+      <p>Este workflow inicia o processo de geração de contratos para um ticket de rateio, acionando um fluxo n8n para a criação dos documentos.</p>
       <div class="trigger-box">
         <div class="trigger-label">Gatilho</div>
-        Ticket de rateio muda para 'Gerar Contratos'.
+        Ticket de rateio muda para a etapa 'Gerar Contratos'.
       </div>
       <div class="action-flow">
-        <div class="action-node" style="background: var(--n8n);"><div class="label">n8n</div>Gera Contratos</div>
+        <div class="action-node" style="background: var(--n8n);"><div class="label">n8n</div>Aciona o fluxo n8n "Geração de Contratos" para criar os documentos com base nos dados do ticket e deals associados.</div>
         <div class="action-arrow">→</div>
-        <div class="action-node terminal"><div class="label">Atualiza Propriedade</div>`contratos_do_ticket_gerados` = true</div>
+        <div class="action-node terminal"><div class="label">Atualiza Propriedade</div>Define a propriedade <code>contratos_do_ticket_gerados</code> como <code>true</code> no ticket do HubSpot.</div>
       </div>
     </div>
   </div>
@@ -745,14 +780,15 @@
       <span class="wf-name">ID 1754291845 - Subir Contratos ClickSign</span>
     </div>
     <div class="wf-body">
+      <p>Após a geração, este workflow é responsável por enviar os contratos para a plataforma ClickSign para coleta de assinaturas.</p>
       <div class="trigger-box">
         <div class="trigger-label">Gatilho</div>
-        Ticket de rateio muda para 'Subir Contratos ClickSign'.
+        Ticket de rateio muda para a etapa 'Subir Contratos ClickSign'.
       </div>
       <div class="action-flow">
-        <div class="action-node" style="background: var(--n8n);"><div class="label">n8n</div>Envia para ClickSign</div>
+        <div class="action-node" style="background: var(--n8n);"><div class="label">n8n</div>Aciona o fluxo n8n "Envio para ClickSign" para criar envelopes de assinatura e anexar os documentos.</div>
         <div class="action-arrow">→</div>
-        <div class="action-node terminal"><div class="label">Atualiza Propriedade</div>`contratos_do_ticket_no_clicksign` = true</div>
+        <div class="action-node terminal"><div class="label">Atualiza Propriedade</div>Define a propriedade <code>contratos_do_ticket_no_clicksign</code> como <code>true</code> no ticket do HubSpot.</div>
       </div>
     </div>
   </div>
@@ -763,14 +799,15 @@
       <span class="wf-name">ID 1756086378 - Aguardando Assinatura</span>
     </div>
     <div class="wf-body">
+      <p>Este workflow monitora o status das assinaturas dos contratos na ClickSign, garantindo que todos os documentos sejam devidamente assinados.</p>
       <div class="trigger-box">
         <div class="trigger-label">Gatilho</div>
-        Ticket de rateio muda para 'Aguardando Assinatura'.
+        Ticket de rateio muda para a etapa 'Aguardando Assinatura'.
       </div>
       <div class="action-flow">
-        <div class="action-node" style="background: var(--n8n);"><div class="label">n8n</div>Checa Assinaturas</div>
+        <div class="action-node" style="background: var(--n8n);"><div class="label">n8n</div>Aciona o fluxo n8n "Checagem de Assinaturas" para verificar o status de cada documento no ClickSign.</div>
         <div class="action-arrow">→</div>
-        <div class="action-node terminal"><div class="label">Atualiza Propriedade</div>`contratos_de_negocios_do_ticket_assinados` = True 🔴</div>
+        <div class="action-node terminal"><div class="label">Atualiza Propriedade</div>Define a propriedade <code>contratos_de_negocios_do_ticket_assinados</code> como <code>True</code> (com 'T' maiúsculo, pois é case-sensitive) no ticket do HubSpot, indicando que todas as assinaturas foram coletadas.</div>
       </div>
     </div>
   </div>
@@ -781,14 +818,15 @@
       <span class="wf-name">ID 1723227507 - Baixando Documentos</span>
     </div>
     <div class="wf-body">
+      <p>Após a assinatura, este workflow orquestra o download dos documentos finalizados e sua organização no Google Drive.</p>
       <div class="trigger-box">
         <div class="trigger-label">Gatilho</div>
-        Ticket de rateio muda para 'Baixando Documentos'.
+        Ticket de rateio muda para a etapa 'Baixando Documentos'.
       </div>
       <div class="action-flow">
-        <div class="action-node" style="background: var(--n8n);"><div class="label">n8n</div>Baixa Documentos</div>
+        <div class="action-node" style="background: var(--n8n);"><div class="label">n8n</div>Aciona o fluxo n8n "Baixar Documentos" para fazer o download dos contratos assinados do ClickSign e organizá-los em pastas específicas no Google Drive.</div>
         <div class="action-arrow">→</div>
-        <div class="action-node terminal"><div class="label">Atualiza Propriedades</div>`link_anexos_drive` + `documentos_baixados` = True 🔴</div>
+        <div class="action-node terminal"><div class="label">Atualiza Propriedades</div>Atualiza as propriedades <code>link_anexos_drive</code> (com o link da pasta no Drive) e <code>documentos_baixados</code> para <code>True</code> (case-sensitive) no ticket do HubSpot.</div>
       </div>
     </div>
   </div>
@@ -799,14 +837,23 @@
       <span class="wf-name">ID 1726537479 - Cadastro no OPS</span>
     </div>
     <div class="wf-body">
+      <p>Este workflow é responsável por integrar os dados dos negócios com o sistema OPS (Sistema de Operações), essencial para o prosseguimento do ciclo.</p>
       <div class="trigger-box">
         <div class="trigger-label">Gatilho</div>
-        Ticket de rateio muda para 'Cadastro no OPS'.
+        Ticket de rateio muda para a etapa 'Cadastro no OPS'.
       </div>
       <div class="action-flow">
-        <div class="action-node" style="background: var(--n8n);"><div class="label">n8n</div>Cadastra no OPS</div>
+        <div class="action-node" style="background: var(--n8n);"><div class="label">n8n</div>Aciona o fluxo n8n "Cadastro no OPS" para enviar os dados dos negócios associados ao ticket para o sistema OPS via API.</div>
         <div class="action-arrow">→</div>
-        <div class="action-node terminal"><div class="label">Atualiza Propriedade</div>`negocios_do_ticket_cadastrados_no_ops` = true</div>
+        <div class="action-node terminal"><div class="label">Atualiza Propriedade</div>Define a propriedade <code>negocios_do_ticket_cadastrados_no_ops</code> como <code>true</code> no ticket do HubSpot.</div>
+      </div>
+      <div class="alert error">
+        <div class="alert-icon">❌</div>
+        <div>
+          <div class="alert-title">PROBLEMA CRÍTICO · Concessionária não mapeada no OPS</div>
+          Se a concessionária do negócio não estiver na lista de 27 mapeadas no workflow n8n, o cadastro no OPS falha silenciosamente.
+          <br>Solução: Cadastrar manualmente no OPS ou solicitar ao time técnico que adicione a concessionária no mapeamento do workflow n8n.
+        </div>
       </div>
     </div>
   </div>
@@ -817,12 +864,13 @@
       <span class="wf-name">ID 1756086655 - Aberto Rateio</span>
     </div>
     <div class="wf-body">
+      <p>Este workflow marca a transição final do ticket para a fase de rateio aberto e move o deal associado para o estágio correspondente.</p>
       <div class="trigger-box">
         <div class="trigger-label">Gatilho</div>
-        Ticket de rateio muda para 'Aberto Rateio'.
+        Ticket de rateio muda para a etapa 'Aberto Rateio'.
       </div>
       <div class="action-flow">
-        <div class="action-node terminal"><div class="label">Ação</div>Deal associado move para 'Em Fluxo de Rateio'</div>
+        <div class="action-node terminal"><div class="label">Ação</div>O deal associado ao ticket é movido para a etapa 'Em Fluxo de Rateio' no pipeline de negócios.</div>
       </div>
     </div>
   </div>
@@ -841,22 +889,23 @@
       <span class="wf-name">ID 1798882847 - Rateio Concluído</span>
     </div>
     <div class="wf-body">
+      <p>Este é o workflow final do ciclo, responsável por concluir o deal após a aprovação do rateio, desde que todas as condições necessárias sejam atendidas.</p>
       <div class="trigger-box">
         <div class="trigger-label">Gatilho</div>
-        Ticket de rateio muda para 'Rateio Aprovado' (ID 1122920288).
+        Ticket de rateio muda para a etapa 'Rateio Aprovado' (ID 1122920288).
       </div>
       <div class="action-flow">
-        <div class="action-node"><div class="label">Condição</div>10 propriedades atendidas (ex: `protocolo_de_rateio`, `documentos_baixados` etc.)</div>
+        <div class="action-node"><div class="label">Condição</div>Verifica se 10 propriedades chave estão preenchidas (ex: <code>protocolo_de_rateio</code>, <code>documentos_baixados</code>, etc.).</div>
         <div class="action-arrow">→</div>
-        <div class="action-node"><div class="label">Ação</div>Aguardar 1 minuto</div>
+        <div class="action-node"><div class="label">Ação</div>Aguardar 1 minuto para garantir a sincronização de dados.</div>
         <div class="action-arrow">→</div>
-        <div class="action-node terminal"><div class="label">Ação</div>Deal associado move para 'Rateio Concluído' (ID 1182747317)</div>
+        <div class="action-node terminal"><div class="label">Ação</div>O deal associado é movido para a etapa 'Rateio Concluído' (ID 1182747317), finalizando o ciclo.</div>
       </div>
       <div class="alert warning">
         <div class="alert-icon">⚠️</div>
         <div>
           <div class="alert-title">ATENÇÃO · WF7 bloqueado</div>
-          Se alguma das 10 condições estiver faltando, o WF7 é bloqueado e o Deal permanece em 'Em Fluxo de Rateio'.
+          Se alguma das 10 condições necessárias para a conclusão do rateio estiver faltando ou não for atendida, o WF7 é bloqueado e o Deal permanece indefinidamente na etapa 'Em Fluxo de Rateio', sem avançar.
         </div>
       </div>
     </div>
@@ -876,32 +925,15 @@
       <span class="wf-name">Criação de Tickets (JSON fornecido anteriormente)</span>
     </div>
     <div class="wf-body">
-      <p>Este fluxo n8n é responsável por agrupar negócios por usina/gerador/alocação e criar tickets de rateio no HubSpot, associando os negócios correspondentes. Ele também atualiza a propriedade `ticket_de_cobranca` para `true` nos negócios após a criação do ticket.</p>
+      <p>Este fluxo n8n é responsável por agrupar negócios por usina/gerador/alocação e criar tickets de rateio no HubSpot, associando os negócios correspondentes. Ele também atualiza a propriedade <code>ticket_de_cobranca</code> para <code>true</code> nos negócios após a criação do ticket.</p>
       <p><strong>Principais Ações:</strong></p>
       <ul>
-        <li>Busca deals no HubSpot com `dealstage` "1119360529" e `ticket_de_cobranca` = false.</li>
-        <li>Agrupa deals por `id_usina_alocacao_e_rateio`, `id_gerador_alocacao_e_rateio` e `alocacao_ou_substituicao_fluxo_de_alocacao_`.</li>
-        <li>Calcula o `consumo_total` dos negócios agrupados.</li>
-        <li>Cria um novo ticket no HubSpot com informações da usina, gerador, tipo de rateio e associa os deals correspondentes.</li>
-        <li>Atualiza os deals associados, definindo `ticket_de_cobranca` como `true`.</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="wf-block">
-    <div class="wf-header">
-      <span class="wf-id" style="background: var(--n8n); color: var(--bg);">n8n</span>
-      <span class="wf-name">Merge de Tickets (JSON fornecido anteriormente)</span>
-    </div>
-    <div class="wf-body">
-      <p>Este fluxo n8n gerencia a fusão de tickets no HubSpot e a organização de arquivos no Google Drive.</p>
-      <p><strong>Principais Ações:</strong></p>
-      <ul>
-        <li>Agrega tickets por usina/gerador para identificar um ticket principal e tickets secundários a serem mergeados.</li>
-        <li>Captura associações de deals para os tickets.</li>
-        <li>Realiza o merge de tickets secundários no ticket principal no HubSpot.</li>
-        <li>Move arquivos do Google Drive dos tickets secundários para a pasta do ticket principal.</li>
-        <li>Atualiza o `soma_do_consumo_dos_negocios_associados_kwh` no ticket principal.</li>
+        <li><strong>Gatilho:</strong> Agendado para rodar em horários específicos (7h, 13h, 19h20) ou acionado manualmente via webhook.</li>
+        <li><strong>Busca de Deals:</strong> Realiza uma requisição HTTP (POST) para a API do HubSpot para buscar deals que estão na etapa <code>1119360529</code> (provavelmente "Cobrança") e que ainda não possuem um ticket de cobrança associado (<code>ticket_de_cobranca</code> = false). As propriedades <code>hs_object_id</code>, <code>dealname</code>, <code>nome_da_usina</code>, <code>gerador_alocacao</code>, <code>alocacao_ou_substituicao_fluxo_de_alocacao_</code>, <code>consumo_medio_em_kwh</code>, <code>id_usina_alocacao_e_rateio</code>, <code>id_gerador_alocacao_e_rateio</code> são coletadas.</li>
+        <li><strong>Agrupamento de Dados (Code1):</strong> Um nó de código JavaScript agrupa os deals encontrados com base em <code>id_usina_alocacao_e_rateio</code>, <code>id_gerador_alocacao_e_rateio</code> e <code>alocacao_ou_substituicao_fluxo_de_alocacao_</code>. Ele calcula o <code>consumo_total</code> para cada grupo e cria uma lista de associações para os deals.</li>
+        <li><strong>Criação de Tickets (HTTP Request6):</strong> Para cada grupo de deals, um novo ticket é criado no HubSpot. As propriedades do ticket são preenchidas dinamicamente com informações como <code>subject</code> (assunto), <code>hubspot_owner_id</code>, <code>soma_do_consumo_dos_negocios_associados_kwh</code>, <code>tipo_de_rateio</code>, <code>usina_alocacao_e_rateio</code>, <code>gerador_alocacao_e_rateio</code>, <code>id_usina_alocacao_e_rateio</code>, <code>id_gerador_alocacao_e_rateio</code> e <code>contratos_do_ticket_gerados</code> (definido como false inicialmente). Os deals são associados ao novo ticket.</li>
+        <li><strong>Atualização de Deals (HTTP Request7):</strong> Após a criação do ticket, os deals que foram associados a ele têm a propriedade <code>ticket_de_cobranca</code> atualizada para <code>true</code>, evitando que sejam processados novamente.</li>
+        <li><strong>Controle Google Sheets:</strong> O fluxo também interage com uma planilha Google Sheets ("Planilha Gamer" - "Controle manual") para registrar o status de "Gerando tickets..." e "Tickets gerados".</li>
       </ul>
     </div>
   </div>
@@ -912,13 +944,15 @@
       <span class="wf-name">Geração de Contratos (Integrado ao WF Ticket 1)</span>
     </div>
     <div class="wf-body">
-      <p>Acionado pelo WF Ticket 1, este fluxo automatiza a geração dos documentos de contrato.</p>
+      <p>Acionado pelo WF Ticket 1 do HubSpot, este fluxo automatiza a geração dos documentos de contrato para os negócios associados a um ticket de rateio.</p>
       <p><strong>Principais Ações:</strong></p>
       <ul>
-        <li>Recebe dados do ticket e dos negócios associados.</li>
-        <li>Utiliza templates para gerar os contratos (ex: PDF, DOCX).</li>
-        <li>Armazena os contratos gerados em um local temporário ou no Google Drive.</li>
-        <li>Atualiza a propriedade `contratos_do_ticket_gerados` no HubSpot.</li>
+        <li><strong>Gatilho:</strong> Webhook acionado pelo WF Ticket 1 do HubSpot quando o ticket de rateio muda para a etapa 'Gerar Contratos'.</li>
+        <li><strong>Coleta de Dados:</strong> Recebe o ID do ticket e busca todos os deals associados a ele, coletando as propriedades necessárias para a geração dos contratos (ex: <code>amount</code>, <code>dealname</code>, dados do cliente, da usina, etc.).</li>
+        <li><strong>Processamento de Desconto (Desconto por extenso):</strong> Um nó de código JavaScript converte o valor numérico do desconto (propriedade <code>desconto</code>) para sua representação por extenso (<code>desconto_extenso</code>), que é utilizada nos contratos.</li>
+        <li><strong>Geração de Documentos:</strong> Utiliza um serviço de template (não especificado no JSON, mas inferido) para preencher modelos de contrato (PDF, DOCX) com os dados coletados.</li>
+        <li><strong>Armazenamento Temporário:</strong> Os contratos gerados são armazenados temporariamente ou enviados diretamente para o próximo fluxo n8n.</li>
+        <li><strong>Atualização no HubSpot:</strong> Atualiza a propriedade <code>contratos_do_ticket_gerados</code> para <code>true</code> no ticket do HubSpot, sinalizando a conclusão desta etapa.</li>
       </ul>
     </div>
   </div>
@@ -929,14 +963,15 @@
       <span class="wf-name">Envio para ClickSign (Integrado ao WF Ticket 2)</span>
     </div>
     <div class="wf-body">
-      <p>Acionado pelo WF Ticket 2, este fluxo envia os contratos gerados para a plataforma ClickSign para coleta de assinaturas.</p>
+      <p>Acionado pelo WF Ticket 2 do HubSpot, este fluxo envia os contratos gerados para a plataforma ClickSign para coleta de assinaturas dos envolvidos.</p>
       <p><strong>Principais Ações:</strong></p>
       <ul>
-        <li>Pega os contratos gerados pelo fluxo anterior.</li>
-        <li>Cria um novo envelope de assinaturas no ClickSign.</li>
-        <li>Adiciona os signatários e os documentos ao envelope.</li>
-        <li>Envia o envelope para assinatura.</li>
-        <li>Atualiza a propriedade `contratos_do_ticket_no_clicksign` no HubSpot.</li>
+        <li><strong>Gatilho:</strong> Webhook acionado pelo WF Ticket 2 do HubSpot quando o ticket de rateio muda para a etapa 'Subir Contratos ClickSign'.</li>
+        <li><strong>Recebimento de Contratos:</strong> Pega os contratos gerados pelo fluxo anterior (Geração de Contratos).</li>
+        <li><strong>Criação de Envelope ClickSign:</strong> Interage com a API da ClickSign para criar um novo envelope de assinaturas para cada conjunto de contratos.</li>
+        <li><strong>Adição de Signatários e Documentos:</strong> Adiciona os signatários (clientes, representantes da Sunne, etc.) e os documentos (termo e regulamento) ao envelope de assinatura.</li>
+        <li><strong>Envio para Assinatura:</strong> Envia o envelope para os signatários via ClickSign.</li>
+        <li><strong>Atualização no HubSpot:</strong> Atualiza a propriedade <code>contratos_do_ticket_no_clicksign</code> para <code>true</code> no ticket do HubSpot, confirmando o envio.</li>
       </ul>
     </div>
   </div>
@@ -947,12 +982,15 @@
       <span class="wf-name">Checagem de Assinaturas (Integrado ao WF Ticket 3)</span>
     </div>
     <div class="wf-body">
-      <p>Acionado pelo WF Ticket 3, este fluxo monitora o status das assinaturas na ClickSign.</p>
+      <p>Acionado pelo WF Ticket 3 do HubSpot, este fluxo monitora o status das assinaturas dos contratos na ClickSign para garantir que todos os documentos foram devidamente assinados.</p>
       <p><strong>Principais Ações:</strong></p>
       <ul>
-        <li>Consulta o status do envelope de assinaturas na ClickSign.</li>
-        <li>Verifica se todos os documentos foram assinados.</li>
-        <li>Atualiza a propriedade `contratos_de_negocios_do_ticket_assinados` no HubSpot para `True` (com 'T' maiúsculo, pois é case-sensitive).</li>
+        <li><strong>Gatilho:</strong> Webhook acionado pelo WF Ticket 3 do HubSpot quando o ticket de rateio muda para a etapa 'Aguardando Assinatura'.</li>
+        <li><strong>Captura Tickets e Deals:</strong> Busca tickets no HubSpot que estão na etapa <code>1242701893</code> (provavelmente "Aguardando Assinatura") e que já tiveram seus contratos gerados (<code>contratos_do_ticket_gerados</code> = true). Em seguida, captura os deals associados a esses tickets.</li>
+        <li><strong>Verificação de Links ClickSign:</strong> Para cada deal associado, verifica as propriedades <code>link_clicksign_termo</code> e <code>link_clicksign_regulamento</code>.</li>
+        <li><strong>Consulta Status ClickSign:</strong> Realiza requisições GET para a API da ClickSign, usando os links dos documentos, para checar o status de cada termo e regulamento. Inclui tratamento de erros 404 para identificar documentos não encontrados.</li>
+        <li><strong>Checagem de Conclusão (Code):</strong> Um nó de código JavaScript verifica se todos os documentos (termo e regulamento de todos os deals associados) foram encontrados e não retornaram erro 404.</li>
+        <li><strong>Atualização no HubSpot (Move o ticket):</strong> Se todos os contratos forem considerados válidos e existentes na ClickSign, a propriedade <code>contratos_de_negocios_do_ticket_assinados</code> é atualizada para <code>True</code> (case-sensitive) no ticket do HubSpot.</li>
       </ul>
     </div>
   </div>
@@ -963,13 +1001,18 @@
       <span class="wf-name">Baixar Documentos (Integrado ao WF Ticket 4)</span>
     </div>
     <div class="wf-body">
-      <p>Acionado pelo WF Ticket 4, este fluxo baixa os documentos assinados e os organiza no Google Drive.</p>
+      <p>Acionado pelo WF Ticket 4 do HubSpot, este fluxo baixa os documentos assinados da ClickSign e os organiza em pastas específicas no Google Drive.</p>
       <p><strong>Principais Ações:</strong></p>
       <ul>
-        <li>Baixa os documentos finais (contratos assinados) da ClickSign.</li>
-        <li>Cria uma pasta específica no Google Drive para o ticket (se ainda não existir).</li>
-        <li>Faz o upload dos documentos baixados para essa pasta.</li>
-        <li>Atualiza as propriedades `link_anexos_drive` e `documentos_baixados` no HubSpot para `True` (case-sensitive).</li>
+        <li><strong>Gatilho:</strong> Webhook acionado pelo WF Ticket 4 do HubSpot quando o ticket de rateio muda para a etapa 'Baixando Documentos'.</li>
+        <li><strong>Download da ClickSign:</strong> Utiliza a API da ClickSign para baixar os documentos finais (contratos assinados) de cada envelope.</li>
+        <li><strong>Organização no Google Drive:</strong> Interage com a API do Google Drive para:
+          <ul>
+            <li>Criar uma pasta específica para o ticket (se ainda não existir), seguindo uma estrutura padronizada.</li>
+            <li>Fazer o upload dos documentos baixados para essa nova pasta.</li>
+          </ul>
+        </li>
+        <li><strong>Atualização no HubSpot:</strong> Atualiza as propriedades <code>link_anexos_drive</code> (com o URL da pasta no Google Drive) e <code>documentos_baixados</code> para <code>True</code> (case-sensitive) no ticket do HubSpot.</li>
       </ul>
     </div>
   </div>
@@ -980,14 +1023,23 @@
       <span class="wf-name">Cadastro no OPS (Integrado ao WF Ticket 5)</span>
     </div>
     <div class="wf-body">
-      <p>Acionado pelo WF Ticket 5, este fluxo realiza o cadastro dos negócios no sistema OPS.</p>
+      <p>Acionado pelo WF Ticket 5 do HubSpot, este fluxo realiza o cadastro dos negócios associados ao ticket no sistema OPS (Sistema de Operações).</p>
       <p><strong>Principais Ações:</strong></p>
       <ul>
-        <li>Pega os dados necessários do ticket e dos negócios associados.</li>
-        <li>Integra com a API do sistema OPS para cadastrar os negócios.</li>
-        <li>Verifica o sucesso do cadastro.</li>
-        <li>Atualiza a propriedade `negocios_do_ticket_cadastrados_no_ops` no HubSpot para `true`.</li>
+        <li><strong>Gatilho:</strong> Webhook acionado pelo WF Ticket 5 do HubSpot quando o ticket de rateio muda para a etapa 'Cadastro no OPS'.</li>
+        <li><strong>Coleta de Dados:</strong> Pega os dados necessários do ticket e dos negócios associados, incluindo informações da usina, gerador, cliente e concessionária.</li>
+        <li><strong>Integração com OPS:</strong> Envia os dados coletados para a API do sistema OPS para realizar o cadastro dos negócios.</li>
+        <li><strong>Verificação de Sucesso:</strong> Monitora a resposta da API do OPS para verificar o sucesso do cadastro.</li>
+        <li><strong>Atualização no HubSpot:</strong> Atualiza a propriedade <code>negocios_do_ticket_cadastrados_no_ops</code> para <code>true</code> no ticket do HubSpot.</li>
       </ul>
+      <div class="alert error">
+        <div class="alert-icon">❌</div>
+        <div>
+          <div class="alert-title">PROBLEMA CRÍTICO · Concessionária não mapeada no OPS</div>
+          Se a concessionária do negócio não estiver na lista de 27 mapeadas no workflow n8n, o cadastro no OPS falha silenciosamente.
+          <br>Solução: Cadastrar manualmente no OPS ou solicitar ao time técnico que adicione a concessionária no mapeamento do workflow n8n.
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1009,94 +1061,94 @@
     </thead>
     <tbody>
       <tr>
-        <td>`dealstage`</td>
+        <td><code>dealstage</code></td>
         <td>Estágio do Negócio</td>
-        <td>Etapa atual do negócio no pipeline. Gatilho para diversos WFs.</td>
+        <td>Etapa atual do negócio no pipeline. Gatilho para diversos WFs e fluxos n8n.</td>
       </tr>
       <tr>
-        <td>`ticket_de_cobranca`</td>
+        <td><code>ticket_de_cobranca</code></td>
         <td>Booleano</td>
-        <td>Indica se um ticket de cobrança já foi criado para o deal. Usado no n8n de criação de tickets.</td>
+        <td>Indica se um ticket de cobrança já foi criado para o deal. Usado no n8n de criação de tickets para evitar duplicação.</td>
       </tr>
       <tr>
-        <td>`existe_pendencia_para_validacao_comercial`</td>
+        <td><code>existe_pendencia_para_validacao_comercial</code></td>
         <td>Lista suspensa</td>
-        <td>Indica se há pendências na validação comercial. Usado no WF1 e WF4.</td>
+        <td>Indica se há pendências na validação comercial. Usado no WF1 e WF4 para direcionar o fluxo.</td>
       </tr>
       <tr>
-        <td>`troca_de_titularidade`</td>
+        <td><code>troca_de_titularidade</code></td>
         <td>Booleano</td>
-        <td>Indica se o negócio envolve troca de titularidade. Usado no WF Bastão Comercial ↔ CS.</td>
+        <td>Indica se o negócio envolve troca de titularidade. Usado no WF Bastão Comercial ↔ CS para definir o path.</td>
       </tr>
       <tr>
-        <td>`nome_da_usina`</td>
+        <td><code>nome_da_usina</code></td>
         <td>Texto</td>
-        <td>Nome da usina associada ao deal. Usado no n8n de criação de tickets.</td>
+        <td>Nome da usina associada ao deal. Crucial para o agrupamento e criação de tickets no n8n.</td>
       </tr>
       <tr>
-        <td>`gerador_alocacao`</td>
+        <td><code>gerador_alocacao</code></td>
         <td>Texto</td>
-        <td>Nome do gerador associado ao deal. Usado no n8n de criação de tickets.</td>
+        <td>Nome do gerador associado ao deal. Usado no n8n de criação de tickets para agrupamento.</td>
       </tr>
       <tr>
-        <td>`id_usina_alocacao_e_rateio`</td>
+        <td><code>id_usina_alocacao_e_rateio</code></td>
         <td>Texto</td>
-        <td>ID da usina para alocação e rateio. Usado no n8n de criação de tickets.</td>
+        <td>ID interno da usina para alocação e rateio. Usado no n8n de criação de tickets e para consultas no MongoDB.</td>
       </tr>
       <tr>
-        <td>`id_gerador_alocacao_e_rateio`</td>
+        <td><code>id_gerador_alocacao_e_rateio</code></td>
         <td>Texto</td>
-        <td>ID do gerador para alocação e rateio. Usado no n8n de criação de tickets.</td>
+        <td>ID interno do gerador para alocação e rateio. Usado no n8n de criação de tickets e para consultas no MongoDB.</td>
       </tr>
       <tr>
-        <td>`alocacao_ou_substituicao_fluxo_de_alocacao_`</td>
+        <td><code>alocacao_ou_substituicao_fluxo_de_alocacao_</code></td>
         <td>Lista suspensa</td>
-        <td>Tipo de alocação (nova, substituição). Usado no n8n de criação de tickets.</td>
+        <td>Tipo de alocação (nova, substituição). Usado no n8n de criação de tickets para agrupamento e nome do ticket.</td>
       </tr>
       <tr>
-        <td>`consumo_medio_em_kwh`</td>
+        <td><code>consumo_medio_em_kwh</code></td>
         <td>Número</td>
-        <td>Consumo médio em kWh do beneficiário. Usado no n8n de criação de tickets.</td>
+        <td>Consumo médio em kWh do beneficiário. Usado no n8n de criação de tickets para calcular o <code>consumo_total</code>.</td>
       </tr>
       <tr>
-        <td>`soma_do_consumo_dos_negocios_associados_kwh`</td>
+        <td><code>soma_do_consumo_dos_negocios_associados_kwh</code></td>
         <td>Número</td>
-        <td>Soma do consumo dos deals associados ao ticket. Atualizado pelo n8n de merge.</td>
+        <td>Soma do consumo dos deals associados ao ticket. Atualizado pelo n8n de merge de tickets.</td>
       </tr>
       <tr>
-        <td>`contratos_do_ticket_gerados`</td>
+        <td><code>contratos_do_ticket_gerados</code></td>
         <td>Booleano</td>
-        <td>Indica se os contratos do ticket foram gerados. Atualizado pelo n8n.</td>
+        <td>Indica se os contratos do ticket foram gerados pelo n8n. Usado como condição para o próximo estágio da cadeia de contratos.</td>
       </tr>
       <tr>
-        <td>`contratos_do_ticket_no_clicksign`</td>
+        <td><code>contratos_do_ticket_no_clicksign</code></td>
         <td>Booleano</td>
-        <td>Indica se os contratos foram enviados para ClickSign. Atualizado pelo n8n.</td>
+        <td>Indica se os contratos foram enviados para ClickSign pelo n8n. Usado como condição para o próximo estágio.</td>
       </tr>
       <tr>
-        <td>`contratos_de_negocios_do_ticket_assinados`</td>
+        <td><code>contratos_de_negocios_do_ticket_assinados</code></td>
         <td>Booleano</td>
-        <td>Indica se todos os contratos foram assinados. Atualizado pelo n8n (True 🔴).</td>
+        <td>Indica se todos os contratos foram assinados na ClickSign. Atualizado pelo n8n (<code>True</code> 🔴 - case-sensitive).</td>
       </tr>
       <tr>
-        <td>`link_anexos_drive`</td>
+        <td><code>link_anexos_drive</code></td>
         <td>URL</td>
-        <td>Link da pasta no Google Drive com os documentos. Atualizado pelo n8n.</td>
+        <td>Link da pasta no Google Drive com os documentos baixados e organizados. Atualizado pelo n8n.</td>
       </tr>
       <tr>
-        <td>`documentos_baixados`</td>
+        <td><code>documentos_baixados</code></td>
         <td>Booleano</td>
-        <td>Indica se os documentos foram baixados e organizados. Atualizado pelo n8n (True 🔴).</td>
+        <td>Indica se os documentos foram baixados e organizados no Google Drive. Atualizado pelo n8n (<code>True</code> 🔴 - case-sensitive).</td>
       </tr>
       <tr>
-        <td>`negocios_do_ticket_cadastrados_no_ops`</td>
+        <td><code>negocios_do_ticket_cadastrados_no_ops</code></td>
         <td>Booleano</td>
-        <td>Indica se os negócios do ticket foram cadastrados no OPS. Atualizado pelo n8n.</td>
+        <td>Indica se os negócios do ticket foram cadastrados no sistema OPS. Atualizado pelo n8n.</td>
       </tr>
       <tr>
-        <td>`protocolo_de_rateio`</td>
+        <td><code>protocolo_de_rateio</code></td>
         <td>Texto</td>
-        <td>Protocolo de rateio. Uma das 10 condições para o WF7.</td>
+        <td>Protocolo de rateio. Uma das 10 condições essenciais para o avanço do WF7 (Rateio Concluído).</td>
       </tr>
     </tbody>
   </table>
@@ -1107,13 +1159,13 @@
 <!-- ══════════════════════════════════════════════ -->
 <section class="section" id="troubleshoot">
   <div class="section-title">Troubleshooting e Pontos de Atenção</div>
-  <div class="section-desc">Problemas comuns e como identificá-los no fluxo.</div>
+  <div class="section-desc">Problemas comuns e como identificá-los no fluxo, com base em observações e dados.</div>
 
   <div class="alert warning">
     <div class="alert-icon">⚠️</div>
     <div>
       <div class="alert-title">ATENÇÃO · Owner do Deal</div>
-      Se o owner do deal for alterado manualmente após a atribuição inicial, o owner anterior permanece atribuído se não for removido manualmente.
+      Se o owner do deal for alterado manualmente após a atribuição inicial pelo workflow, o owner anterior permanece atribuído se não for removido manualmente. Isso pode causar inconsistências na atribuição e notificações.
     </div>
   </div>
 
@@ -1121,7 +1173,7 @@
     <div class="alert-icon">⚠️</div>
     <div>
       <div class="alert-title">ATENÇÃO · Branch AlugSol duplicado no WF1</div>
-      O path de Gabriela Bruno está inacessível. Todos os deals AlugSol vão para Joao Vitor / Leticia Ananda.
+      O path de Gabriela Bruno está inacessível no WF1. Atualmente, todos os deals do tipo AlugSol são direcionados para João Vitor / Letícia Ananda. Isso pode levar a sobrecarga e atrasos no processo de validação comercial para esses deals.
     </div>
   </div>
 
@@ -1129,7 +1181,7 @@
     <div class="alert-icon">⚠️</div>
     <div>
       <div class="alert-title">ATENÇÃO · Campos de alocação incompletos</div>
-      Se qualquer um dos 4 campos (usina, gerador, IDs) estiver vazio, WF Alocação não avança para Cobrança. Sem alerta.
+      Se qualquer um dos 4 campos de alocação (<code>nome_da_usina</code>, <code>gerador_alocacao</code>, <code>id_usina_alocacao_e_rateio</code>, <code>id_gerador_alocacao_e_rateio</code>) estiver vazio, o Workflow de Alocação não avança para a etapa de Cobrança. **Não há alerta explícito no sistema**, o que pode levar a deals travados sem que a equipe perceba a causa.
     </div>
   </div>
 
@@ -1137,7 +1189,24 @@
     <div class="alert-icon">⚠️</div>
     <div>
       <div class="alert-title">ATENÇÃO · Ticket sem vínculo com o negócio</div>
-      WF Ticket 1 e WF7 dependem da associação ticket → deal. Sem ela, a ação de mover dealstage é ignorada silenciosamente.
+      Workflows como o WF Ticket 1 (Gerar Contratos) e o WF7 (Rateio Concluído) dependem criticamente da associação entre o ticket e o deal. Sem essa associação, as ações de mover o estágio do deal são ignoradas silenciosamente, resultando em um fluxo que não avança e sem feedback claro do problema.
+    </div>
+  </div>
+
+  <div class="alert error">
+    <div class="alert-icon">❌</div>
+    <div>
+      <div class="alert-title">PROBLEMA CRÍTICO · Concessionária não mapeada no OPS</div>
+      No fluxo n8n de "Cadastro no OPS" (integrado ao WF Ticket 5), se a concessionária do negócio não estiver na lista de 27 concessionárias mapeadas internamente no workflow, o cadastro no sistema OPS falha silenciosamente. Isso significa que o negócio não será registrado no OPS, mas o HubSpot não receberá um erro explícito.
+      <br><strong>Solução:</strong> É necessário cadastrar manualmente a concessionária no OPS ou solicitar ao time técnico que adicione a concessionária no mapeamento do workflow n8n para que futuras integrações funcionem.
+    </div>
+  </div>
+
+  <div class="alert warning">
+    <div class="alert-icon">⚠️</div>
+    <div>
+      <div class="alert-title">ATENÇÃO · WF7 bloqueado por condições não atendidas</div>
+      O Workflow 7 (Rateio Concluído) exige que 10 propriedades específicas estejam preenchidas e atendam a certas condições para que o deal avance para 'Rateio Concluído'. Se alguma dessas condições estiver faltando ou não for satisfeita, o WF7 é bloqueado e o Deal permanece na etapa 'Em Fluxo de Rateio' indefinidamente, exigindo intervenção manual para identificar e corrigir as propriedades ausentes.
     </div>
   </div>
 </section>
@@ -1151,7 +1220,7 @@
 
   <div class="alert info" style="margin-bottom:20px;">
     <div class="alert-icon">📋</div>
-    <div><div class="alert-title">Como usar no Draw.io</div>1. Acesse app.diagrams.net · 2. Clique em <strong>Extras → Edit Diagram</strong> (Ctrl+Shift+X) · 3. Cole o código abaixo e clique em <strong>Insert</strong></div>
+    <div><div class="alert-title">Como usar no Draw.io</div>1. Acesse <a href="https://app.diagrams.net" target="_blank">app.diagrams.net</a> · 2. Clique em <strong>Extras → Edit Diagram</strong> (Ctrl+Shift+X) · 3. Cole o código abaixo e clique em <strong>Insert</strong></div>
   </div>
 
   <div class="code-block">
@@ -1219,7 +1288,6 @@ WF_T3[WF Ticket 3 · ID 1756086378\nStatus → 'Aguardando Assinatura'] --> N8N_
 N8N_3[⬡ n8n: Checa Assinaturas\ncontratos_de_negocios... = True 🔴] --> WF_T4
 WF_T4[WF Ticket 4 · ID 1723227507\nStatus → 'Baixando Documentos'] --> N8N_4
 N8N_4[⬡ n8n: Baixar Documentos\nlink_drive + documentos_baixados = True 🔴] --> WF_T5
-WF_T5[WF Ticket 5 · ID 1726537479\nStatus → 'Cadastro no OPS'] --> N8N_5
 N8N_5[⬡ n8n: Cadastra no OPS\nnegocios_do_ticket_cadastrados_no_ops = true] --> WF_T6
 WF_T6[WF Ticket 6 · ID 1756086655\nTicket → 'Aberto Rateio'\nDeal → 'Em Fluxo de Rateio']
 

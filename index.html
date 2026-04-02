@@ -1,1481 +1,1747 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Ciclo Operacional Completo · Sunne</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ciclo Operacional Completo — Sunne v2.1</title>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:'Space Grotesk',sans-serif;background:#faf9f7;color:#1a0d0a;line-height:1.6;-webkit-font-smoothing:antialiased}
+  /*
+    ATENÇÃO: As fontes 'Decima Mono Cyr', 'Redonda' e 'Redonda Compressed'
+    não são do Google Fonts. Para que elas funcionem, você precisará
+    importá-las via @font-face no seu CSS ou garantir que estejam
+    disponíveis no ambiente onde o HTML será renderizado.
+    Aqui, estou usando fallbacks genéricos para garantir a compatibilidade.
+  */
+  /* @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap'); */
 
-/* ── TOPBAR ── */
-.topbar{background:#32001a;padding:12px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:2px solid #ff6a1a}
-.brand{display:flex;align-items:center;gap:12px}
-.brand-mark{width:32px;height:32px;border-radius:50%;background:#ff6a1a;position:relative;flex-shrink:0}
-.brand-mark::after{content:'';width:14px;height:14px;border-radius:50%;background:#32001a;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
-.brand-name{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:#fff;letter-spacing:0.1em;text-transform:uppercase}
-.brand-sub{font-size:10px;color:rgba(255,255,255,0.35);margin-top:1px}
-.topbar-pills{display:flex;gap:8px}
-.pill{font-size:10px;font-weight:600;padding:4px 12px;border-radius:20px;letter-spacing:0.05em;border:1px solid}
-.pill-ghost{border-color:rgba(255,255,255,0.15);color:rgba(255,255,255,0.4)}
-.pill-orange{border-color:rgba(255,106,26,0.4);background:rgba(255,106,26,0.12);color:#ff8c4a}
+  :root {
+    /* Cores Institucionais Sunne */
+    --sunne-rubi: #32001a;
+    --sunne-laranja-solar: #ff6a1a;
 
-/* ── HERO ── */
-.hero{background:#32001a;padding:72px 40px;position:relative;overflow:hidden}
-.hero-circle{position:absolute;border-radius:50%;pointer-events:none}
-.hc1{width:500px;height:500px;border:80px solid rgba(255,106,26,0.06);top:-160px;right:-100px}
-.hc2{width:280px;height:280px;border:45px solid rgba(255,106,26,0.05);top:-30px;right:160px}
-.hc3{width:120px;height:120px;background:rgba(255,106,26,0.06);top:70px;right:340px}
-.hc4{width:60px;height:60px;background:rgba(255,106,26,0.07);bottom:40px;left:80px}
-.hc5{width:160px;height:160px;border:26px solid rgba(255,106,26,0.04);bottom:-40px;left:38%}
-.hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 240px;gap:48px;align-items:center;position:relative;z-index:2}
-.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(255,106,26,0.14);border:1px solid rgba(255,106,26,0.3);color:#ff8c4a;font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:5px 14px;border-radius:4px;margin-bottom:20px}
-.tag-dot{width:6px;height:6px;border-radius:50%;background:#ff6a1a;animation:blink 2s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
-.hero-title{font-size:46px;font-weight:700;color:#fff;line-height:1.05;letter-spacing:-0.03em;margin-bottom:18px}
-.hero-title em{font-style:normal;color:#ff6a1a}
-.hero-desc{font-size:14px;color:rgba(255,255,255,0.5);max-width:460px;line-height:1.7}
-.hero-stats{display:flex;flex-direction:column;gap:6px}
-.stat-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:13px 17px;display:flex;align-items:center;gap:13px}
-.stat-num{font-family:'Space Mono',monospace;font-size:24px;font-weight:700;color:#ff6a1a;min-width:30px;line-height:1}
-.stat-lbl{font-size:11px;color:rgba(255,255,255,0.45);line-height:1.3}
-.stat-sub{font-size:10px;color:rgba(255,255,255,0.2)}
+    /* Cores Secundárias Sunne */
+    --sunne-magenta: #ff365e; /* Unidade Assina - Usado para Crítico/Erro */
+    --sunne-amarelo-dourado: #fab200; /* Unidade Geração - Usado para Alerta/Atenção */
+    --sunne-turquesa: #69e0cf; /* Unidade Licenciados - Usado para Sucesso/Destaque */
+    --sunne-bege-pessego: #f2c7a3; /* Unidade Comunidade */
 
-/* ── JOURNEY MAP ── */
-.journey-map{background:#32001a;border-top:1px solid rgba(255,106,26,0.15);padding:28px 40px}
-.journey-inner{max-width:1100px;margin:0 auto}
-.journey-label{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,106,26,0.6);font-family:'Space Mono',monospace;margin-bottom:16px}
-.journey-steps{display:flex;align-items:center;flex-wrap:wrap;gap:0}
-.jstep{display:flex;align-items:center}
-.jstep-box{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:7px 12px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.7);white-space:nowrap;transition:background 0.15s}
-.jstep-box:hover{background:rgba(255,255,255,0.09)}
-.jstep-box.active{background:rgba(255,106,26,0.15);border-color:rgba(255,106,26,0.4);color:#ff8c4a}
-.jstep-num{width:18px;height:18px;border-radius:50%;background:rgba(255,106,26,0.2);border:1px solid rgba(255,106,26,0.4);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#ff6a1a;font-family:'Space Mono',monospace;flex-shrink:0}
-.jstep-arrow{color:rgba(255,255,255,0.2);font-size:14px;padding:0 4px}
+    /* Cores de Base (adaptadas para tema escuro Sunne) */
+    --bg: #1a000d; /* Fundo escuro, próximo ao Rubi */
+    --surface: #32001a; /* Rubi */
+    --surface2: #4d0029; /* Rubi mais claro para contraste */
+    --border: #660033; /* Borda mais escura */
+    --border-light: #800040; /* Borda mais clara */
+    --text: #f2c7a3; /* Bege Pêssego para texto principal */
+    --text-muted: #e0b08a; /* Bege Pêssego mais escuro */
+    --text-dim: #b38f6b; /* Bege Pêssego ainda mais escuro */
 
-/* ── LEGEND ── */
-.legend-bar{background:#fff;border-bottom:1px solid #ebe7e2;padding:12px 40px}
-.legend-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;flex-wrap:wrap;gap:18px}
-.legend-ttl{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#b8b0a8}
-.leg-item{display:flex;align-items:center;gap:7px;font-size:12px;color:#7a6e6a;font-weight:500}
-.leg-dot{width:10px;height:10px;flex-shrink:0}
-.ld-rubi{background:#32001a;border-radius:3px}
-.ld-solar{background:#ff6a1a;border-radius:3px}
-.ld-signal{background:#69e0cf;border-radius:50%}
-.ld-warn{background:#fab200;border-radius:2px}
-.ld-manual{background:#f2c7a3;border-radius:3px}
-.ld-magenta{background:#ff365e;border-radius:3px}
+    /* Mapeamento para as cores de acento do layout original */
+    --accent-primary: var(--sunne-laranja-solar); /* Laranja Solar para destaque principal */
+    --accent-success: var(--sunne-turquesa); /* Turquesa para sucesso */
+    --accent-error: var(--sunne-magenta); /* Magenta para erro/crítico */
+    --accent-warning: var(--sunne-amarelo-dourado); /* Amarelo Dourado para aviso */
+    --accent-info: var(--sunne-bege-pessego); /* Bege Pêssego para informação */
 
-/* ── MAIN ── */
-.main{max-width:1100px;margin:0 auto;padding:52px 40px 80px}
+    /* Cores específicas de integração */
+    --n8n: #ff6d00; /* Mantido, mas pode ser ajustado se necessário */
+    --hubspot: #ff7a59; /* Mantido, mas pode ser ajustado se necessário */
+  }
 
-/* ── SECTION HEADER ── */
-.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:24px}
-.sec-icon{width:34px;height:34px;border-radius:8px;background:#32001a;color:#ff6a1a;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0;font-family:'Space Mono',monospace}
-.sec-title{font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#32001a;font-family:'Space Mono',monospace}
-.sec-line{flex:1;height:1px;background:#ebe7e2}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* ── PHASE CONTAINER ── */
-.phase-container{margin-bottom:64px}
+  body {
+    background: var(--bg);
+    color: var(--text);
+    /* Fontes Sunne - Fallbacks genéricos */
+    font-family: 'Redonda', sans-serif; /* Corpo de texto */
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
 
-/* ── PHASE HEADER ── */
-.phase-header{border-radius:14px;padding:22px 26px;margin-bottom:20px;display:flex;align-items:center;gap:18px;position:relative;overflow:hidden}
-.ph-rubi{background:#32001a}
-.ph-solar{background:linear-gradient(135deg,#ff6a1a,#ff8c4a)}
-.ph-bege{background:#fff8f3;border:1px solid rgba(255,106,26,0.2)}
-.ph-magenta{background:linear-gradient(135deg,#5a0030,#32001a)}
-.ph-teal{background:linear-gradient(135deg,#006b5e,#008f7a)}
-.phase-header::after{content:'';position:absolute;right:-50px;top:-50px;width:160px;height:160px;border-radius:50%;border:32px solid rgba(255,255,255,0.05);pointer-events:none}
-.phase-num{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:16px;font-weight:700;flex-shrink:0;position:relative;z-index:1}
-.num-light{background:rgba(255,255,255,0.12);color:#fff;border:2px solid rgba(255,255,255,0.2)}
-.num-dark{background:rgba(50,0,26,0.15);color:#32001a;border:2px solid rgba(50,0,26,0.2)}
-.num-orange{background:rgba(50,0,26,0.2);color:#32001a;border:2px solid rgba(50,0,26,0.15)}
-.num-teal{background:rgba(255,255,255,0.15);color:#fff;border:2px solid rgba(255,255,255,0.25)}
-.phase-info{position:relative;z-index:1;flex:1}
-.phase-tag{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:3px;font-family:'Space Mono',monospace}
-.tag-light{color:rgba(255,106,26,0.8)}
-.tag-dark{color:rgba(50,0,26,0.5)}
-.tag-white{color:rgba(255,255,255,0.6)}
-.phase-title{font-size:17px;font-weight:600;line-height:1.3}
-.title-light{color:#fff}
-.title-dark{color:#32001a}
-.phase-subtitle{font-size:12px;margin-top:3px}
-.sub-light{color:rgba(255,255,255,0.45)}
-.sub-dark{color:rgba(50,0,26,0.5)}
-.sub-white{color:rgba(255,255,255,0.6)}
-.phase-meta{display:flex;flex-direction:column;gap:6px;position:relative;z-index:1;min-width:200px}
-.meta-pill{font-size:10px;font-weight:600;padding:4px 10px;border-radius:4px;letter-spacing:0.05em;font-family:'Space Mono',monospace;white-space:nowrap;border:1px solid}
-.mp-light{border-color:rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.05)}
-.mp-orange{border-color:rgba(255,106,26,0.3);color:#c04800;background:rgba(255,106,26,0.1)}
-.mp-rubi{border-color:rgba(50,0,26,0.15);color:#32001a;background:rgba(50,0,26,0.06)}
-.mp-teal{border-color:rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.08)}
+  /* ─── HEADER ─── */
+  .site-header {
+    border-bottom: 1px solid var(--border);
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+    font-size: 13px;
+    color: var(--accent-primary);
+    letter-spacing: 0.05em;
+  }
+  .version-badge {
+    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+    font-size: 11px;
+    background: rgba(255,106,26,0.15); /* Laranja Solar com transparência */
+    border: 1px solid rgba(255,106,26,0.3);
+    color: var(--accent-primary);
+    padding: 3px 10px;
+    border-radius: 4px;
+  }
 
-/* ── GRIDS ── */
-.phase-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
-.phase-grid-3{grid-template-columns:1fr 1fr 1fr}
-.phase-grid-full{grid-template-columns:1fr}
+  /* ─── NAV TABS ─── */
+  .nav-tabs {
+    display: flex;
+    gap: 2px;
+    padding: 0 40px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    overflow-x: auto;
+  }
+  .nav-tab {
+    padding: 12px 18px;
+    font-size: 12px;
+    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); }
 
-/* ── CARDS ── */
-.card{border-radius:14px;overflow:hidden;border:1px solid;transition:box-shadow 0.2s,transform 0.2s}
-.card:hover{box-shadow:0 4px 18px rgba(50,0,26,0.09);transform:translateY(-1px)}
-.card-white{background:#fff;border-color:rgba(50,0,26,0.12)}
-.card-warm{background:linear-gradient(135deg,#fff8f3,#fff);border-color:rgba(255,106,26,0.2)}
-.card-pale{background:#faf9f7;border-color:#ebe7e2}
-.card-crit{background:#fffafa;border-color:rgba(255,54,94,0.2)}
-.card-stripe{height:4px;width:100%}
-.stripe-rubi{background:linear-gradient(to right,#32001a,#5a0030)}
-.stripe-solar{background:linear-gradient(to right,#ff6a1a,#ff8c4a)}
-.stripe-manual{background:linear-gradient(to right,#f2c7a3,#fab200)}
-.stripe-signal{background:linear-gradient(to right,#69e0cf,#4ac5b6)}
-.stripe-magenta{background:linear-gradient(to right,#ff365e,#ff6a8a)}
-.card-head{padding:16px 20px 14px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;border-bottom:1px solid #f5f3f0}
-.card-warm .card-head{border-bottom-color:rgba(255,106,26,0.1)}
-.card-id{font-family:'Space Mono',monospace;font-size:10px;color:#b8b0a8;margin-bottom:4px}
-.card-title{font-size:13px;font-weight:600;line-height:1.35;color:#32001a}
-.card-warm .card-title{color:#7a2800}
-.card-status{font-size:10px;font-weight:600;padding:3px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0;font-family:'Space Mono',monospace;letter-spacing:0.04em}
-.status-hs{background:rgba(50,0,26,0.06);color:#32001a;border:1px solid rgba(50,0,26,0.12)}
-.status-n8n{background:rgba(255,106,26,0.1);color:#8a3000;border:1px solid rgba(255,106,26,0.2)}
-.status-manual{background:rgba(242,199,163,0.3);color:#7a4500;border:1px solid rgba(242,199,163,0.5)}
-.status-auto{background:rgba(105,224,207,0.15);color:#006b5e;border:1px solid rgba(105,224,207,0.3)}
-.card-body{padding:15px 20px}
-.col-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;font-family:'Space Mono',monospace;color:rgba(50,0,26,0.4)}
-.card-warm .col-label{color:rgba(255,106,26,0.5)}
-.trig-box{border-radius:8px;padding:10px 13px;border-left:3px solid;background:#faf9f7;border-left-color:#32001a;margin-bottom:12px}
-.card-warm .trig-box{background:rgba(255,106,26,0.06);border-left-color:#ff6a1a}
-.trig-text{font-size:12.5px;color:#7a6e6a;line-height:1.6}
-.trig-text strong{color:#1a0d0a;font-weight:600}
-.card-warm .trig-text strong{color:#5a2000}
-.actions-list{display:flex;flex-direction:column;gap:7px}
-.action{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;color:#7a6e6a;line-height:1.5}
-.act-num{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;margin-top:2px;font-family:'Space Mono',monospace}
-.num-rubi{background:rgba(50,0,26,0.08);color:#32001a}
-.num-solar{background:rgba(255,106,26,0.12);color:#8a3000}
-.num-bege{background:rgba(242,199,163,0.3);color:#7a4500}
-.num-signal{background:rgba(105,224,207,0.2);color:#006b5e}
-.action strong{color:#1a0d0a;font-weight:600}
-.card-warm .action strong{color:#5a2000}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  /* ─── LAYOUT ─── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px; }
 
-/* ── RESPONSIBLE ── */
-.resp-section{margin-bottom:12px}
-.resp-label{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(50,0,26,0.4);font-family:'Space Mono',monospace;margin-bottom:7px}
-.resp-pills{display:flex;flex-wrap:wrap;gap:5px}
-.resp-pill{display:flex;align-items:center;gap:6px;background:rgba(50,0,26,0.06);border:1px solid rgba(50,0,26,0.12);border-radius:6px;padding:4px 9px;font-size:11px;font-weight:600;color:#32001a}
-.resp-pill.rp-solar{background:rgba(255,106,26,0.08);border-color:rgba(255,106,26,0.2);color:#8a3000}
-.resp-pill.rp-bege{background:rgba(242,199,163,0.25);border-color:rgba(242,199,163,0.5);color:#7a4500}
-.resp-pill.rp-signal{background:rgba(105,224,207,0.12);border-color:rgba(105,224,207,0.3);color:#006b5e}
-.resp-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.rd-rubi{background:#32001a}
-.rd-solar{background:#ff6a1a}
-.rd-bege{background:#f2c7a3}
-.rd-signal{background:#69e0cf}
+  /* ─── SECTIONS ─── */
+  .section { display: none; }
+  .section.active { display: block; }
 
-/* ── ALERTS ── */
-.card-alert{margin:0 20px 15px;border-radius:8px;padding:9px 13px;display:flex;gap:8px;border:1px solid;border-left:3px solid}
-.alert-warn{background:#fffbea;border-color:rgba(250,178,0,0.3);border-left-color:#fab200}
-.alert-crit{background:#fff2f5;border-color:rgba(255,54,94,0.2);border-left-color:#ff365e}
-.alert-info{background:#f5fffe;border-color:rgba(105,224,207,0.25);border-left-color:#69e0cf}
-.alert-icon{font-size:13px;flex-shrink:0;line-height:1.5}
-.alert-text{font-size:11.5px;line-height:1.6}
-.alert-warn .alert-text{color:#5a4500}
-.alert-crit .alert-text{color:#5a0020}
-.alert-info .alert-text{color:#004d44}
-.alert-text strong{font-weight:600}
-.mono{font-family:'Space Mono',monospace;font-size:10px;background:rgba(50,0,26,0.07);padding:1px 4px;border-radius:3px}
+  /* ─── HERO ─── */
+  .hero {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: 8px;
+    padding: 36px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    /* Gradiente com cores Sunne */
+    background: linear-gradient(90deg, var(--sunne-laranja-solar), var(--sunne-magenta), var(--sunne-turquesa));
+  }
+  .hero-title {
+    font-family: 'Redonda Compressed', sans-serif; /* Fonte para títulos */
+    font-size: 24px;
+    font-weight: bold; /* Redonda Compressed é Bold */
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .hero-sub {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+  .hero-stats {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .stat { }
+  .stat-num {
+    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--accent-primary);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
 
-/* ── PROPS ── */
-.card-props{padding:10px 20px;border-top:1px solid #f5f3f0;display:flex;flex-wrap:wrap;align-items:center;gap:5px;background:#faf9f7}
-.card-warm .card-props{border-top-color:rgba(255,106,26,0.1);background:rgba(255,106,26,0.04)}
-.props-lbl{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#b8b0a8;font-family:'Space Mono',monospace;margin-right:3px}
-.prop-tag{font-size:10.5px;font-weight:500;padding:2px 7px;border-radius:4px;font-family:'Space Mono',monospace}
-.prop-hs{background:rgba(50,0,26,0.06);color:#32001a;border:1px solid rgba(50,0,26,0.1)}
-.prop-n8n{background:rgba(255,106,26,0.08);color:#8a3000;border:1px solid rgba(255,106,26,0.16)}
+  /* ─── NEW BADGE ─── */
+  .new-badge {
+    display: inline-block;
+    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+    font-size: 10px;
+    background: rgba(105,224,207,0.15); /* Turquesa com transparência */
+    border: 1px solid rgba(105,224,207,0.4);
+    color: var(--accent-success);
+    padding: 2px 8px;
+    border-radius: 3px;
+    vertical-align: middle;
+    margin-left: 8px;
+    animation: pulse-green 2s infinite;
+  }
+  @keyframes pulse-green {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
 
-/* ── STEP ROW (Fase 7) ── */
-.step-row{display:grid;grid-template-columns:80px 1fr;gap:0;margin-bottom:8px}
-.step-aside{display:flex;flex-direction:column;align-items:center;padding-top:4px}
-.step-badge{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:'Space Mono',monospace;flex-shrink:0}
-.badge-hs{background:#32001a;color:#ff6a1a;border:2px solid #ff6a1a}
-.badge-n8n{background:#ff6a1a;color:#fff;font-size:9px}
-.step-type-lbl{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-top:5px;font-family:'Space Mono',monospace}
-.lbl-hs{color:#32001a}
-.lbl-n8n{color:#ff6a1a}
-.step-vline{flex:1;width:2px;background:linear-gradient(to bottom,rgba(50,0,26,0.15),transparent);margin-top:6px}
-.step-body{padding-bottom:12px}
+  /* ─── PHASE CARDS ─── */
+  .phase-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 700px) { .phase-grid { grid-template-columns: 1fr; } }
 
-/* ── SIGNAL ROW ── */
-.signal-row{padding:6px 0 6px 80px;margin:2px 0}
-.signal-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(105,224,207,0.1);border:1px solid rgba(105,224,207,0.3);color:#006b5e;border-radius:20px;padding:4px 12px;font-size:10.5px;font-weight:600;font-family:'Space Mono',monospace}
-.signal-chip::before{content:'→';font-size:12px}
+  .phase-card {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: 8px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .phase-card:hover {
+    border-color: var(--border-light);
+    background: var(--surface2);
+  }
+  .phase-card.highlight {
+    border-color: rgba(105,224,207,0.4); /* Turquesa com transparência */
+    background: rgba(105,224,207,0.04);
+  }
+  .phase-number {
+    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .phase-name {
+    font-family: 'Redonda', sans-serif; /* Corpo de texto */
+    font-weight: 500;
+    margin-bottom: 4px;
+    font-size: 14px;
+  }
+  .phase-type {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .phase-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    position: absolute;
+    top: 20px; right: 20px;
+  }
 
-/* ── ENTRY / END NODES ── */
-.entry-node,.end-node{border-radius:14px;padding:18px 22px;display:flex;align-items:center;gap:16px;position:relative;overflow:hidden;margin-bottom:12px}
-.entry-node{background:#32001a;border:1px solid rgba(255,106,26,0.2)}
-.end-node{background:linear-gradient(135deg,#006b5e,#008f7a);border:1px solid rgba(105,224,207,0.2)}
-.node-emoji{font-size:24px;flex-shrink:0;position:relative;z-index:1}
-.node-body{position:relative;z-index:1}
-.node-label{font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#ff6a1a;margin-bottom:3px;font-family:'Space Mono',monospace}
-.end-node .node-label{color:rgba(105,224,207,0.8)}
-.node-title{font-size:14px;font-weight:600;color:#fff;margin-bottom:2px}
-.node-desc{font-size:11px;color:rgba(255,255,255,0.4)}
+  /* ─── WORKFLOW BLOCK ─── */
+  .wf-block {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .wf-header {
+    background: var(--surface);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .wf-id {
+    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+    font-size: 11px;
+    color: var(--text-dim);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+  .wf-name {
+    font-family: 'Redonda', sans-serif; /* Corpo de texto */
+    font-weight: 500;
+    font-size: 13px;
+    flex: 1;
+  }
+  .wf-body { padding: 20px; background: var(--bg); }
 
-/* ── PIPELINE TABLE ── */
-.stage-table-wrap{border-radius:12px;overflow:hidden;border:1px solid #ebe7e2;margin-bottom:14px}
-.stage-table{width:100%;border-collapse:collapse;background:#fff}
-.stage-table thead tr{background:#32001a}
-.stage-table th{padding:10px 16px;font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.6);text-align:left;font-family:'Space Mono',monospace}
-.stage-table td{padding:10px 16px;font-size:12px;color:#7a6e6a;border-bottom:1px solid #f5f3f0;vertical-align:top}
-.stage-table tr:last-child td{border-bottom:none}
-.stage-table tr:hover td{background:#faf9f7}
-.t-stage-name{display:block;font-weight:600;color:#32001a;font-size:12px}
-.t-stage-id{display:block;font-family:'Space Mono',monospace;font-size:9px;color:#b8b0a8;margin-top:1px}
+  /* ─── TRIGGER BOX ─── */
+  .trigger-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent-primary); /* Laranja Solar */
+    border-radius: 0 6px 6px 0;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    font-size: 13px;
+  }
+  .trigger-label {
+    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+    font-size: 10px;
+    color: var(--accent-primary); /* Laranja Solar */
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
 
-/* ── N8N SCHEDULE TABLE ── */
-.n8n-table-wrap{border-radius:12px;overflow:hidden;border:1px solid #ebe7e2;margin-bottom:20px}
-.n8n-table{width:100%;border-collapse:collapse;background:#fff}
-.n8n-table thead tr{background:linear-gradient(to right,#ff6a1a,#ff8c4a)}
-.n8n-table th{padding:10px 16px;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.9);text-align:left;font-family:'Space Mono',monospace}
-.n8n-table td{padding:10px 16px;font-size:12px;color:#7a6e6a;border-bottom:1px solid #f5f3f0;vertical-align:middle}
-.n8n-table tr:last-child td{border-bottom:none}
-.n8n-table tr:hover td{background:#fff8f3}
-.n8n-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:rgba(255,106,26,0.12);color:#8a3000;font-size:10px;font-weight:700;font-family:'Space Mono',monospace;flex-shrink:0}
-.n8n-name{font-weight:600;color:#32001a}
-.time-chip{display:inline-block;background:rgba(50,0,26,0.07);border:1px solid rgba(50,0,26,0.12);border-radius:4px;padding:2px 7px;font-family:'Space Mono',monospace;font-size:10px;color:#32001a;font-weight:600}
-.time-chip.tc-new{background:rgba(105,224,207,0.12);border-color:rgba(105,224,207,0.3);color:#006b5e}
-.dur-chip{display:inline-block;background:rgba(250,178,0,0.1);border:1px solid rgba(250,178,0,0.25);border-radius:4px;padding:2px 7px;font-family:'Space Mono',monospace;font-size:10px;color:#7a4500;font-weight:600}
+  /* ─── CONDITION LIST ─── */
+  .condition-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .condition-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 12px;
+    padding: 8px 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+  }
+  .condition-item .prop {
+    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+    color: var(--sunne-turquesa); /* Turquesa */
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+  .condition-item .val {
+    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+    font-size: 11px;
+    color: var(--sunne-amarelo-dourado); /* Amarelo Dourado */
+  }
+  .condition-item .desc { color: var(--text-muted); }
+  .condition-icon { flex-shrink: 0; margin-top: 1px; }
 
-/* ── TROUBLE GRID ── */
-.trouble-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
-.t-card{background:#fff;border-radius:12px;border:1px solid #ebe7e2;padding:18px;box-shadow:0 1px 3px rgba(50,0,26,0.05);transition:box-shadow 0.2s}
-.t-card:hover{box-shadow:0 4px 14px rgba(50,0,26,0.08)}
-.t-card.tc-crit{border-color:rgba(255,54,94,0.2);background:#fffafa}
-.t-card.tc-warn{border-color:rgba(250,178,0,0.25);background:#fffef5}
-.t-card.tc-info{border-color:rgba(105,224,207,0.25);background:#f5fffe}
-.t-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
-.t-icon-wrap{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.wrap-crit{background:rgba(255,54,94,0.1)}
-.wrap-warn{background:rgba(250,178,0,0.1)}
-.wrap-info{background:rgba(50,0,26,0.06)}
-.t-title{font-size:12.5px;font-weight:600;color:#1a0d0a;line-height:1.3;padding-top:3px}
-.t-text{font-size:12px;color:#7a6e6a;line-height:1.7}
-.t-text strong{font-weight:600;color:#1a0d0a}
+  /* ─── ACTION FLOW ─── */
+  .action-flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .action-node {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 12px;
+    text-align: center;
+    min-width: 120px;
+  }
+  .action-node .label {
+    font-size: 10px;
+    color: var(--text-dim);
+    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+    margin-bottom: 3px;
+    text-transform: uppercase;
+  }
+  .action-arrow {
+    padding: 0 8px;
+    color: var(--text-dim);
+    font-size: 16px;
+  }
+  .action-node.terminal {
+    border-color: rgba(105,224,207,0.4); /* Turquesa com transparência */
+    background: rgba(105,224,207,0.06);
+  }
+  .action-node.terminal .label { color: var(--accent-success); }
 
-/* ── LOOP BOX ── */
-.loop-box{border:2px dashed rgba(255,106,26,0.3);border-radius:12px;padding:16px;position:relative;margin:12px 0;background:rgba(255,106,26,0.03)}
-.loop-label{position:absolute;top:-10px;left:16px;background:#ff6a1a;color:#32001a;font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:2px 9px;border-radius:3px;font-family:'Space Mono',monospace}
+  /* ─── PROPERTIES TABLE ─── */
+  .props-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-bottom: 20px;
+  }
+  .props-table th {
+    text-align: left;
+    padding: 8px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .props-table td {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .props-table tr:hover td { background: var(--surface2); }
+  .prop-name {
+    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+    color: var(--sunne-turquesa); /* Turquesa */
+    font-size: 11px;
+  }
+  .prop-new {
+    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+    font-size: 9px;
+    background: rgba(105,224,207,0.15); /* Turquesa com transparência */
+    border: 1px solid rgba(105,224,207,0.3);
+    color: var(--accent-success);
+    padding: 1px 5px;
+    border-radius: 2px;
+    margin-left: 4px;
+  }
 
-/* ── FOOTER ── */
-footer{background:#32001a;padding:34px 40px;margin-top:72px;position:relative;overflow:hidden}
-footer::before{content:'';position:absolute;right:-70px;top:-70px;width:250px;height:250px;border-radius:50%;border:50px solid rgba(255,106,26,0.05);pointer-events:none}
-.footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;position:relative;z-index:1}
-.footer-brand{display:flex;align-items:center;gap:10px}
-.footer-mark{width:28px;height:28px;border-radius:50%;background:rgba(255,106,26,0.14);border:1px solid rgba(255,106,26,0.28);display:flex;align-items:center;justify-content:center}
-.footer-mark-inner{width:12px;height:12px;border-radius:50%;background:#ff6a1a;opacity:0.8}
-.footer-name{font-size:13px;font-weight:700;color:#fff;letter-spacing:0.08em;font-family:'Space Mono',monospace}
-.footer-sub{font-size:10px;color:rgba(255,255,255,0.25);margin-top:1px}
-.footer-text{font-size:11px;color:rgba(255,255,255,0.28);line-height:1.7;text-align:right}
-.footer-text span{color:#ff6a1a}
+  /* ─── ALERT BOXES ─── */
+  .alert {
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .alert.critical {
+    background: rgba(255,54,94,0.08); /* Magenta com transparência */
+    border: 1px solid rgba(255,54,94,0.3);
+  }
+  .alert.warning {
+    background: rgba(250,178,0,0.08); /* Amarelo Dourado com transparência */
+    border: 1px solid rgba(250,178,0,0.3);
+  }
+  .alert.info {
+    background: rgba(242,199,163,0.08); /* Bege Pêssego com transparência */
+    border: 1px solid rgba(242,199,163,0.3);
+  }
+  .alert.success {
+    background: rgba(105,224,207,0.08); /* Turquesa com transparência */
+    border: 1px solid rgba(105,224,207,0.3);
+  }
+  .alert-title { font-weight: 600; margin-bottom: 4px; }
+  .alert.critical .alert-title { color: var(--accent-error); }
+  .alert.warning .alert-title { color: var(--accent-warning); }
+  .alert.info .alert-title { color: var(--accent-info); }
+  .alert.success .alert-title { color: var(--accent-success); }
 
-/* ── RESPONSIVE ── */
-@media(max-width:780px){
-  .topbar{padding:10px 20px}
-  .hero{padding:44px 20px}
-  .hero-inner{grid-template-columns:1fr}
-  .hero-title{font-size:32px}
-  .legend-bar{padding:12px 20px}
-  .main{padding:28px 20px 60px}
-  .phase-grid,.phase-grid-3,.two-col{grid-template-columns:1fr}
-  .step-row{grid-template-columns:60px 1fr}
-  .signal-row{padding-left:60px}
-  footer{padding:26px 20px}
-  .footer-text{text-align:left}
-}
+  /* ─── N8N HANDOFF ─── */
+  .n8n-block {
+    border: 1px solid rgba(255,109,0,0.35);
+    background: rgba(255,109,0,0.05);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin: 12px 0;
+    font-size: 12px;
+  }
+  .n8n-label {
+    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+    font-size: 10px;
+    color: var(--n8n);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .n8n-label::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--n8n);
+    display: inline-block;
+  }
+
+  /* ─── TIMELINE ─── */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px; top: 8px; bottom: 0;
+    width: 1px;
+    background: var(--border);
+  }
+  .tl-item {
+    position: relative;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tl-item:last-child { border-bottom: none; margin-bottom: 0; }
+  .tl-dot {
+    position: absolute;
+    left: -24px; top: 4px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+    background: var(--accent-primary); /* Laranja Solar */
+  }
+  .tl-dot.n8n-dot { background: var(--n8n); }
+  .tl-dot.green { background: var(--accent-success); }
+  .tl-dot.new { background: var(--accent-success); box-shadow: 0 0 8px rgba(105,224,207,0.5); } /* Turquesa */
+  .tl-phase {
+    font-family: 'Redonda', sans-serif; /* Corpo de texto */
+    font-weight: 500;
+    margin-bottom: 4px;
+    font-size: 14px;
+  }
+  .tl-desc { color: var(--text-muted); font-size: 12px; }
+  .tl-meta {
+    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 8px;
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface);
+    color: var(--text-dim);
+    font-size: 11px;
+    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+    letter-spacing: 0.03em;
+    margin-top: 40px;
+  }
+
+  /* ─── SECTION HEADERS ─── */
+  .section-title {
+    font-family: 'Redonda Compressed', sans-serif; /* Fonte para títulos */
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--accent-primary); /* Laranja Solar */
+    margin-bottom: 6px;
+  }
+  .section-desc {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+
+  /* ─── CODE BLOCK ─── */
+  .code-block {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .code-header {
+    background: var(--surface2);
+    padding: 10px 15px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .code-content {
+    padding: 15px;
+    white-space: pre-wrap;
+    word-break: break-all;
+    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+  .copy-btn {
+    background: var(--accent-primary); /* Laranja Solar */
+    color: var(--bg);
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Decima Mono Cyr', monospace; /* Fonte para código/IDs */
+    font-size: 10px;
+    transition: background 0.2s;
+  }
+  .copy-btn:hover { background: #e65100; } /* Laranja Solar mais escuro */
+
+  /* Mermaid specific styles */
+  .mermaid-diagram {
+    background: var(--surface);
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    color: var(--text);
+  }
+  .mermaid-diagram pre {
+    text-align: left;
+    background: var(--bg);
+    padding: 15px;
+    border-radius: 4px;
+    overflow-x: auto;
+  }
 </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
-<header class="topbar">
-  <div class="brand">
-    <div class="brand-mark"></div>
-    <div>
-      <div class="brand-name">Sunne</div>
-      <div class="brand-sub">Documentação Interna · Operações</div>
-    </div>
-  </div>
-  <div class="topbar-pills">
-    <div class="pill pill-ghost">HubSpot · n8n · ClickSign</div>
-    <div class="pill pill-orange">● Ciclo Comercial Completo</div>
-  </div>
+<header class="site-header">
+  <div class="logo">SUNNE OPERAÇÕES</div>
+  <div class="version-badge">v2.1 · Abr 2026</div>
 </header>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-circle hc1"></div>
-  <div class="hero-circle hc2"></div>
-  <div class="hero-circle hc3"></div>
-  <div class="hero-circle hc4"></div>
-  <div class="hero-circle hc5"></div>
-  <div class="hero-inner">
-    <div>
-      <div class="hero-tag"><div class="tag-dot"></div>Da Validação ao Rateio</div>
-      <h1 class="hero-title">Ciclo Operacional<br/><em>Completo</em></h1>
-      <p class="hero-desc">Documentação integral do processo que conduz um negócio desde a entrada em Validação Comercial até a abertura do Fluxo de Rateio — cobrindo 4 pipelines, 13 workflows automatizados no HubSpot, 11 fluxos n8n, handoffs manuais, responsáveis e integrações com ClickSign e Google Drive.</p>
-    </div>
+<nav class="nav-tabs">
+  <div class="nav-tab active" onclick="showSection('overview')">Visão Geral</div>
+  <div class="nav-tab" onclick="showSection('validacao')">Validação Comercial</div>
+  <div class="nav-tab" onclick="showSection('alocacao')">Alocação</div>
+  <div class="nav-tab" onclick="showSection('contratos')">Contratos & OPS</div>
+  <div class="nav-tab" onclick="showSection('rateio')">Rateio</div>
+  <div class="nav-tab" onclick="showSection('n8n')">Fluxos n8n</div>
+  <div class="nav-tab" onclick="showSection('props')">Propriedades Críticas</div>
+  <div class="nav-tab" onclick="showSection('troubleshoot')">Troubleshooting</div>
+  <div class="nav-tab" onclick="showSection('mermaid')">Diagrama</div>
+</nav>
+
+<main class="container">
+
+<!-- ══════════════════════════════════════════════ -->
+<!--  SEÇÃO: VISÃO GERAL                           -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="section active" id="overview">
+  <div class="hero">
+    <div class="hero-title">Ciclo Operacional Completo — Da Validação Comercial ao Rateio</div>
+    <div class="hero-sub">Este documento detalha o processo operacional da Sunne, desde a entrada de um negócio em Validação Comercial até o estágio de "Em Fluxo de Rateio". Abrange pipelines de negócios e tickets, 13 workflows automatizados no HubSpot, 11 fluxos n8n com seus horários de execução e lógicas internas, responsáveis por fase, propriedades críticas e pontos de atenção para troubleshooting. O objetivo é fornecer uma visão técnica e aprofundada da automação e dos processos manuais envolvidos.</div>
     <div class="hero-stats">
-      <div class="stat-card">
-        <div class="stat-num">13</div>
-        <div><div class="stat-lbl">Workflows HubSpot</div><div class="stat-sub">Todos mapeados</div></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num">11</div>
-        <div><div class="stat-lbl">Fluxos n8n</div><div class="stat-sub">Com horários mapeados</div></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num">4</div>
-        <div><div class="stat-lbl">Pipelines envolvidos</div><div class="stat-sub">Negócios + Tickets</div></div>
-      </div>
-      <div class="stat-card">
+      <div class="stat">
         <div class="stat-num">8</div>
-        <div><div class="stat-lbl">Fases do ciclo</div><div class="stat-sub">Do lead ao rateio</div></div>
+        <div class="stat-label">Fases Principais</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">5</div>
+        <div class="stat-label">Pipelines HubSpot</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">13</div>
+        <div class="stat-label">Workflows HubSpot</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">11</div>
+        <div class="stat-label">Fluxos n8n</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Fases do Ciclo Operacional</div>
+  <div class="section-desc">Visão geral das 8 fases principais e seus responsáveis.</div>
+
+  <div class="phase-grid">
+    <div class="phase-card" onclick="showSection('validacao')">
+      <div class="phase-dot" style="background: var(--accent-primary);"></div>
+      <div class="phase-number">Fase 1-3</div>
+      <div class="phase-name">Validação Comercial</div>
+      <div class="phase-type">HubSpot (Automático) + Analista</div>
+    </div>
+    <div class="phase-card" onclick="showSection('alocacao')">
+      <div class="phase-dot" style="background: var(--accent-primary);"></div>
+      <div class="phase-number">Fase 4-5</div>
+      <div class="phase-name">Passagem de Bastão & Alocação</div>
+      <div class="phase-type">HubSpot (Automático) + CS / Operações</div>
+    </div>
+    <div class="phase-card" onclick="showSection('contratos')">
+      <div class="phase-dot" style="background: var(--accent-primary);"></div>
+      <div class="phase-number">Fase 6-7</div>
+      <div class="phase-name">Cobrança & Contratos</div>
+      <div class="phase-type">CS / Financeiro + HubSpot + n8n</div>
+    </div>
+    <div class="phase-card" onclick="showSection('rateio')">
+      <div class="phase-dot" style="background: var(--accent-success);"></div>
+      <div class="phase-number">Fase 8</div>
+      <div class="phase-name">Em Fluxo de Rateio <span class="new-badge">NOVO</span></div>
+      <div class="phase-type">HubSpot + n8n</div>
+    </div>
+  </div>
+
+  <div class="section-title">Pipelines Envolvidos</div>
+  <div class="section-desc">Pipelines de Negócios e Tickets que regem o fluxo.</div>
+
+  <div class="wf-block">
+    <div class="wf-header">
+      <span class="wf-name">Pipelines de Negócios</span>
+    </div>
+    <div class="wf-body">
+      <ul class="condition-list">
+        <li class="condition-item">
+          <div class="condition-icon">💼</div>
+          <div class="prop">Marketplace | Vendas</div>
+          <div class="desc">ID: 707007820 · Estágios: Validação Comercial, Negócio Fechado, Negócio Perdido</div>
+        </li>
+        <li class="condition-item">
+          <div class="condition-icon">💼</div>
+          <div class="prop">Sunne Vendas</div>
+          <div class="desc">ID: 136344723 · Estágios: Validação Comercial, Concluído, Descartado</div>
+        </li>
+        <li class="condition-item">
+          <div class="condition-icon">💼</div>
+          <div class="prop">Funil Sunne Gestão</div>
+          <div class="desc">ID: 19594139 · Estágios: Validação Comercial (Gestão), Negócio fechado, Negócio perdido</div>
+        </li>
+        <li class="condition-item">
+          <div class="condition-icon">💼</div>
+          <div class="prop">Fluxo de Alocação/Cobrança/Rateio</div>
+          <div class="desc">ID: 766897029 · Estágios: Alocação, Cobrança, Assinatura, Em Fluxo de Rateio, Rateio Concluído, Pendências, Cancelamento</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="wf-block">
+    <div class="wf-header">
+      <span class="wf-name">Pipeline de Validação Comercial</span>
+      <span class="wf-id">ID: 861938200</span>
+    </div>
+    <div class="wf-body">
+      <ul class="condition-list">
+        <li class="condition-item">
+          <div class="condition-icon">✅</div>
+          <div class="prop">Para Validação</div>
+          <div class="desc">Estágio inicial para análise.</div>
+        </li>
+        <li class="condition-item">
+          <div class="condition-icon">✅</div>
+          <div class="prop">Validados</div>
+          <div class="desc">Negócios aprovados na validação.</div>
+        </li>
+        <li class="condition-item">
+          <div class="condition-icon">⚠️</div>
+          <div class="prop">Pendências</div>
+          <div class="desc">Negócios com pendências a serem corrigidas.</div>
+        </li>
+        <li class="condition-item">
+          <div class="condition-icon">❌</div>
+          <div class="prop">Cancelados</div>
+          <div class="desc">Negócios que não prosseguiram.</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-title">Responsáveis por Fase — Resumo</div>
+  <div class="section-desc">Quem atua em cada etapa do processo.</div>
+
+  <table class="props-table">
+    <thead>
+      <tr>
+        <th>Fase</th>
+        <th>Responsável</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1 — Entrada em Validação</td>
+        <td>HubSpot (automático)</td>
+      </tr>
+      <tr>
+        <td>2 — Análise</td>
+        <td>Joao Vitor ou Leticia Ananda (Analista de Validação)</td>
+      </tr>
+      <tr>
+        <td>3A — Aprovação</td>
+        <td>HubSpot (automático)</td>
+      </tr>
+      <tr>
+        <td>3B — Pendências</td>
+        <td>HubSpot notifica → Closer do negócio corrige</td>
+      </tr>
+      <tr>
+        <td>3C — Revalidação</td>
+        <td>Closer corrige → HubSpot re-atribui analista</td>
+      </tr>
+      <tr>
+        <td>4 — Passagem de Bastão</td>
+        <td>HubSpot (automático)</td>
+      </tr>
+      <tr>
+        <td>5 — Alocação</td>
+        <td>CS / Operações (preenchimento manual) + HubSpot (automático)</td>
+      </tr>
+      <tr>
+        <td>6 — Cobrança</td>
+        <td>CS / Financeiro (manual)</td>
+      </tr>
+      <tr>
+        <td>7 — Contratos</td>
+        <td>HubSpot + n8n (totalmente automático após pagamento)</td>
+      </tr>
+      <tr>
+        <td>8 — Rateio</td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══════════════════════════════════════════════ -->
+<!--  SEÇÃO: VALIDAÇÃO COMERCIAL                   -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="section" id="validacao">
+  <div class="section-title">Fase 1-3: Validação Comercial</div>
+  <div class="section-desc">Detalhes da entrada, análise e aprovação/pendência de negócios.</div>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Fase 1: Entrada em Validação Comercial</div>
+      <div class="tl-desc">Um negócio entra em "Validação Comercial" em um dos pipelines de vendas.</div>
+      <div class="tl-meta">Gatilho: Dealstage em "Validação Comercial"</div>
+      <div class="wf-block">
+        <div class="wf-header">
+          <span class="wf-name">WF1: Validação Comercial - Entrada</span>
+          <span class="wf-id">ID: 1033650084</span>
+        </div>
+        <div class="wf-body">
+          <div class="trigger-box">
+            <div class="trigger-label">Gatilho</div>
+            Negócio entra no estágio "Validação Comercial" (qualquer pipeline).
+          </div>
+          <div class="condition-list">
+            <li class="condition-item">
+              <div class="condition-icon">🚫</div>
+              <div class="desc">Se já passou por "Para Validação" no pipeline de validação, o WF é bloqueado.</div>
+            </li>
+          </div>
+          <div class="action-flow">
+            <div class="action-node"><div class="label">Ação</div>Move para 'Para Validação' (Pipeline de Validação)</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node"><div class="label">Ação</div>Atribui Analista (João Vitor / Leticia Ananda)</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node terminal"><div class="label">Resultado</div>Negócio pronto para análise</div>
+          </div>
+          <div class="alert warning">
+            <div class="alert-icon">⚠️</div>
+            <div>
+              <div class="alert-title">ATENÇÃO · Branch AlugSol duplicado</div>
+              O pipeline Marketplace tem duas ramificações com o mesmo valor `AlugSol`, tornando o path de Gabriela Bruno inacessível. Todos os deals AlugSol vão para João Vitor / Leticia Ananda.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Fase 2: Análise pelo Analista</div>
+      <div class="tl-desc">O analista de validação revisa o negócio e preenche a propriedade `existe_pendencia_para_validacao_comercial`.</div>
+      <div class="tl-meta">Responsável: João Vitor ou Leticia Ananda</div>
+      <div class="wf-block">
+        <div class="wf-header">
+          <span class="wf-name">WF5: Rede de Segurança - Atribuição de Analista</span>
+          <span class="wf-id">ID: 1653033997</span>
+        </div>
+        <div class="wf-body">
+          <div class="trigger-box">
+            <div class="trigger-label">Gatilho</div>
+            Negócio em "Para Validação" (Pipeline de Validação) sem analista atribuído.
+          </div>
+          <div class="action-flow">
+            <div class="action-node"><div class="label">Ação</div>Atribui Analista (João Vitor / Leticia Ananda) por rodízio</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node terminal"><div class="label">Resultado</div>Garante que nenhum negócio fique sem analista</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Fase 3A: Aprovação e Fechamento</div>
+      <div class="tl-desc">Se o negócio for aprovado (`existe_pendencia_para_validacao_comercial` = `false`).</div>
+      <div class="tl-meta">Gatilho: Propriedade preenchida</div>
+      <div class="wf-block">
+        <div class="wf-header">
+          <span class="wf-name">WF2: Validação Comercial - Aprovado</span>
+          <span class="wf-id">ID: 1033650084</span>
+        </div>
+        <div class="wf-body">
+          <div class="trigger-box">
+            <div class="trigger-label">Gatilho</div>
+            `existe_pendencia_para_validacao_comercial` = `false`.
+          </div>
+          <div class="action-flow">
+            <div class="action-node"><div class="label">Ação</div>Move para 'Validados' (Pipeline de Validação)</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node"><div class="label">Ação</div>Aguarda 1 minuto</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node"><div class="label">Ação</div>Move para estágio final do pipeline de origem (Ex: 'Negócio Fechado')</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node terminal"><div class="label">Resultado</div>Negócio pronto para passagem de bastão</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot" style="background: var(--accent-error);"></div>
+      <div class="tl-phase">Fase 3B: Pendências ou Cancelamento</div>
+      <div class="tl-desc">Se o negócio tiver pendências (`existe_pendencia_para_validacao_comercial` = `true`).</div>
+      <div class="tl-meta">Gatilho: Propriedade preenchida</div>
+      <div class="wf-block">
+        <div class="wf-header">
+          <span class="wf-name">WF3: Validação Comercial - Pendência</span>
+          <span class="wf-id">ID: 1033650084</span>
+        </div>
+        <div class="wf-body">
+          <div class="trigger-box">
+            <div class="trigger-label">Gatilho</div>
+            `existe_pendencia_para_validacao_comercial` = `true`.
+          </div>
+          <div class="action-flow">
+            <div class="action-node"><div class="label">Ação</div>Aguarda 2 minutos</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node"><div class="label">Ação</div>Verifica `pendencia_comercial_validacao`</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node"><div class="label">Ação</div>Move para 'Pendências' ou 'Cancelados' (Pipeline de Validação)</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node"><div class="label">Ação</div>Notifica owner e closer</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node terminal"><div class="label">Resultado</div>Negócio em pendência ou cancelado</div>
+          </div>
+          <div class="alert warning">
+            <div class="alert-icon">⚠️</div>
+            <div>
+              <div class="alert-title">ATENÇÃO · `pendencia_comercial_validacao` com valor fora da lista</div>
+              WF3 tem dois branches fechados. Qualquer valor não mapeado faz o deal parar sem ação e sem notificação.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot" style="background: var(--accent-primary);"></div>
+      <div class="tl-phase">Fase 3C: Revalidação</div>
+      <div class="tl-desc">O closer corrige as pendências e o negócio é reenviado para validação.</div>
+      <div class="tl-meta">Responsável: Closer do negócio</div>
+      <div class="wf-block">
+        <div class="wf-header">
+          <span class="wf-name">WF4: Validação Comercial - Revalidação</span>
+          <span class="wf-id">ID: 1033650084</span>
+        </div>
+        <div class="wf-body">
+          <div class="trigger-box">
+            <div class="trigger-label">Gatilho</div>
+            `existe_pendencia_para_validacao_comercial` vazio E já passou por "Para Validação".
+          </div>
+          <div class="action-flow">
+            <div class="action-node"><div class="label">Ação</div>Move para 'Para Validação' (Pipeline de Validação)</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node"><div class="label">Ação</div>Atribui novo analista</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node terminal"><div class="label">Resultado</div>Negócio volta para análise</div>
+          </div>
+          <div class="alert warning">
+            <div class="alert-icon">⚠️</div>
+            <div>
+              <div class="alert-title">ATENÇÃO · `analista_de_validacao_comercial` nunca é sobrescrito</div>
+              Em revalidações, o analista anterior permanece atribuído se não for removido manualmente.
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- JOURNEY MAP -->
-<div class="journey-map">
-  <div class="journey-inner">
-    <div class="journey-label">Mapa da Jornada</div>
-    <div class="journey-steps">
-      <div class="jstep"><div class="jstep-box"><div class="jstep-num">1</div>Entrada em Validação</div><div class="jstep-arrow">›</div></div>
-      <div class="jstep"><div class="jstep-box"><div class="jstep-num">2</div>Análise Manual</div><div class="jstep-arrow">›</div></div>
-      <div class="jstep"><div class="jstep-box"><div class="jstep-num">3</div>Aprovação ou Pendência</div><div class="jstep-arrow">›</div></div>
-      <div class="jstep"><div class="jstep-box"><div class="jstep-num">4</div>Passagem de Bastão</div><div class="jstep-arrow">›</div></div>
-      <div class="jstep"><div class="jstep-box"><div class="jstep-num">5</div>Alocação</div><div class="jstep-arrow">›</div></div>
-      <div class="jstep"><div class="jstep-box"><div class="jstep-num">6</div>Cobrança e Ticket</div><div class="jstep-arrow">›</div></div>
-      <div class="jstep"><div class="jstep-box"><div class="jstep-num">7</div>Contratos e Assinatura</div><div class="jstep-arrow">›</div></div>
-      <div class="jstep"><div class="jstep-box active"><div class="jstep-num">8</div>Em Fluxo de Rateio ●</div></div>
-    </div>
-  </div>
-</div>
+<!-- ══════════════════════════════════════════════ -->
+<!--  SEÇÃO: ALOCAÇÃO                              -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="section" id="alocacao">
+  <div class="section-title">Fase 4-5: Passagem de Bastão & Alocação</div>
+  <div class="section-desc">Detalhes da transição do negócio para o CS e o processo de alocação.</div>
 
-<!-- LEGEND -->
-<div class="legend-bar">
-  <div class="legend-inner">
-    <span class="legend-ttl">Legenda</span>
-    <div class="leg-item"><div class="leg-dot ld-rubi"></div>Automação HubSpot</div>
-    <div class="leg-item"><div class="leg-dot ld-solar"></div>Integração n8n</div>
-    <div class="leg-item"><div class="leg-dot ld-manual"></div>Ação Manual</div>
-    <div class="leg-item"><div class="leg-dot ld-signal"></div>Sinal entre sistemas</div>
-    <div class="leg-item"><div class="leg-dot ld-warn"></div>Ponto de atenção</div>
-    <div class="leg-item"><div class="leg-dot ld-magenta"></div>Risco crítico</div>
-  </div>
-</div>
-
-<!-- MAIN -->
-<main class="main">
-
-<!-- ═══════════════════════════════════════
-     FASE 1 — ENTRADA EM VALIDAÇÃO
-═══════════════════════════════════════ -->
-<div class="phase-container">
-  <div class="sec-head">
-    <div class="sec-icon">1</div>
-    <div class="sec-title">Fase 1 — Entrada em Validação Comercial</div>
-    <div class="sec-line"></div>
-  </div>
-
-  <div class="phase-header ph-rubi">
-    <div class="phase-num num-light">1</div>
-    <div class="phase-info">
-      <div class="phase-tag tag-light">WF 1767627185 + WF 1770133798</div>
-      <div class="phase-title title-light">Negócio entra em Validação Comercial → move para Pipeline de Validação e recebe analista</div>
-      <div class="phase-subtitle sub-light">Qualquer negócio que atingir o estágio de Validação Comercial em qualquer dos 3 pipelines de vendas — mais os negócios de iGreen e Alexandria, que já nascem no Pipeline de Validação</div>
-    </div>
-    <div class="phase-meta">
-      <div class="meta-pill mp-light">⏱ Imediato (automático)</div>
-      <div class="meta-pill mp-light">🎯 Objeto: Negócio</div>
-      <div class="meta-pill mp-light">🔁 Reinscrição: Não</div>
-    </div>
-  </div>
-
-  <div class="stage-table-wrap">
-    <table class="stage-table">
-      <thead><tr>
-        <th>Pipeline de Origem</th><th>Estágio Gatilho</th><th>Estágio Destino</th><th>Analista Atribuído</th>
-      </tr></thead>
-      <tbody>
-        <tr>
-          <td>Marketplace | Vendas</td>
-          <td><span class="t-stage-name">Validação Comercial</span><span class="t-stage-id">1033650084</span></td>
-          <td><span class="t-stage-name">Para Validação · Pipeline de Validação Comercial</span><span class="t-stage-id">1288618541 · pipeline 861938200</span></td>
-          <td>Joao Vitor ou Leticia Ananda (rodízio) — exceto AlugSol ⚠️</td>
-        </tr>
-        <tr>
-          <td>Sunne Vendas</td>
-          <td><span class="t-stage-name">Validação Comercial</span><span class="t-stage-id">235469752</span></td>
-          <td><span class="t-stage-name">Para Validação · Pipeline de Validação Comercial</span><span class="t-stage-id">1288618541</span></td>
-          <td>Joao Vitor ou Leticia Ananda (rodízio)</td>
-        </tr>
-        <tr>
-          <td>Funil Sunne Gestão</td>
-          <td><span class="t-stage-name">Validação Comercial (Gestão)</span><span class="t-stage-id">1089002560</span></td>
-          <td><span class="t-stage-name">Para Validação · Pipeline de Validação Comercial</span><span class="t-stage-id">1288618541</span></td>
-          <td>Joao Vitor ou Leticia Ananda (rodízio)</td>
-        </tr>
-        <tr>
-          <td>iGreen / Alexandria</td>
-          <td><span class="t-stage-name">Já criados em Para Validação</span><span class="t-stage-id">Pipeline de Validação Comercial</span></td>
-          <td><span class="t-stage-name">Permanecem em Para Validação</span><span class="t-stage-id">Quando validados → Fluxo de Alocação/Cobrança/Rateio</span></td>
-          <td>Joao Vitor ou Leticia Ananda (rodízio)</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="phase-grid">
-    <div class="card card-white">
-      <div class="card-stripe stripe-rubi"></div>
-      <div class="card-head">
-        <div>
-          <div class="card-id">WF · ID 1767627185 · rev. 40</div>
-          <div class="card-title">Fluxo de Validação 1 — Novas Validações para Pipe de Validação</div>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Fase 4: Passagem de Bastão Comercial → CS</div>
+      <div class="tl-desc">Após a aprovação, o negócio é movido para o pipeline de Alocação/Cobrança/Rateio.</div>
+      <div class="tl-meta">Gatilho: Negócio aprovado e movido para estágio final do pipeline de origem.</div>
+      <div class="wf-block">
+        <div class="wf-header">
+          <span class="wf-name">WF: Passagem de Bastão Comercial ↔ CS</span>
+          <span class="wf-id">ID: 1653033997</span>
         </div>
-        <div class="card-status status-hs">● Ativo</div>
-      </div>
-      <div class="card-body">
-        <div class="resp-section">
-          <div class="resp-label">Responsáveis</div>
-          <div class="resp-pills">
-            <div class="resp-pill"><div class="resp-dot rd-rubi"></div>Joao Vitor (ID 85776405)</div>
-            <div class="resp-pill"><div class="resp-dot rd-rubi"></div>Leticia Ananda (ID 85776406)</div>
-            <div class="resp-pill rp-bege"><div class="resp-dot rd-bege"></div>Gabriela Bruno (ID 82601273) — AlugSol ⚠️</div>
+        <div class="wf-body">
+          <div class="trigger-box">
+            <div class="trigger-label">Gatilho</div>
+            Negócio entra em "Negócio Fechado" (Marketplace), "Concluído" (Sunne Vendas) ou "Negócio Fechado" (Gestão).
+          </div>
+          <div class="action-flow">
+            <div class="action-node"><div class="label">Ação</div>Verifica `troca_de_titularidade`</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node"><div class="label">Ação</div>Move para 'Alocação' (Fluxo ACR)</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node terminal"><div class="label">Resultado</div>Negócio no pipeline de Alocação</div>
           </div>
         </div>
-        <div class="col-label">Gatilho</div>
-        <div class="trig-box">
-          <div class="trig-text">Evento de mudança de <strong>dealstage</strong> para <span class="mono">1033650084</span>, <span class="mono">235469752</span> ou <span class="mono">1089002560</span>. Condição de refinamento: <strong>hs_v2_date_entered_1288618541 deve estar vazia</strong> — garante que o deal entre apenas uma vez.</div>
-        </div>
-        <div class="col-label" style="margin-top:12px;">Lógica de Roteamento</div>
-        <div class="actions-list">
-          <div class="action"><div class="act-num num-rubi">1</div><span>Verifica o <strong>pipeline</strong> do negócio (branch estático)</span></div>
-          <div class="action"><div class="act-num num-rubi">2</div><span>Sunne Vendas (<span class="mono">136344723</span>) → move para <strong>Para Validação</strong> + atribui por rodízio</span></div>
-          <div class="action"><div class="act-num num-rubi">3</div><span>Funil Gestão (<span class="mono">19594139</span>) → move para <strong>Para Validação</strong> + atribui por rodízio</span></div>
-          <div class="action"><div class="act-num num-rubi">4</div><span>Marketplace (<span class="mono">707007820</span>) → verifica <strong>modelo_com_fit</strong>: AlugSol vai para Gabriela Bruno (⚠️ bug — ver alerta); demais modelos vão para rodízio</span></div>
-          <div class="action"><div class="act-num num-rubi">5</div><span>iGreen / Alexandria (default branch) → só atribui analista, <strong>sem mover de pipeline</strong></span></div>
-        </div>
-      </div>
-      <div class="card-alert alert-warn">
-        <div class="alert-icon">⚠️</div>
-        <div class="alert-text"><strong>Bug no branch AlugSol:</strong> as duas ramificações do Marketplace têm o valor <span class="mono">AlugSol</span> duplicado, tornando o path de Gabriela Bruno inacessível. Deals AlugSol sempre caem no rodízio. <strong>O campo analista_de_validacao_comercial nunca é sobrescrito</strong> — se já tiver valor, nada acontece.</div>
-      </div>
-      <div class="card-props">
-        <span class="props-lbl">Propriedades-chave:</span>
-        <span class="prop-tag prop-hs">dealstage</span>
-        <span class="prop-tag prop-hs">pipeline</span>
-        <span class="prop-tag prop-hs">modelo_com_fit</span>
-        <span class="prop-tag prop-hs">analista_de_validacao_comercial</span>
-        <span class="prop-tag prop-hs">hs_v2_date_entered_1288618541</span>
       </div>
     </div>
 
-    <div class="card card-white">
-      <div class="card-stripe stripe-rubi"></div>
-      <div class="card-head">
-        <div>
-          <div class="card-id">WF · ID 1770133798 · rev. 4 — Rede de Segurança</div>
-          <div class="card-title">Fluxo de Validação 5 — Revezamento de Negócios sem Analista</div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Fase 5: Alocação</div>
+      <div class="tl-desc">O time de CS/Operações preenche os dados de alocação.</div>
+      <div class="tl-meta">Responsável: CS / Operações (preenchimento manual)</div>
+      <div class="wf-block">
+        <div class="wf-header">
+          <span class="wf-name">WF: Alocação - Avança para Cobrança</span>
+          <span class="wf-id">ID: 1653033997</span>
         </div>
-        <div class="card-status status-hs">● Ativo</div>
-      </div>
-      <div class="card-body">
-        <div class="col-label">Quando aciona</div>
-        <div class="trig-box">
-          <div class="trig-text">Deal em <strong>Para Validação</strong> (<span class="mono">1288618541</span>) AND <strong>analista_de_validacao_comercial vazio</strong>. Reinscrição ativada por mudança de dealstage para Para Validação ou por limpeza do campo analista.</div>
-        </div>
-        <div class="col-label" style="margin-top:12px;">O que faz</div>
-        <div class="actions-list">
-          <div class="action"><div class="act-num num-rubi">1</div><span>Atribui por rodízio entre <strong>Joao Vitor</strong> e <strong>Leticia Ananda</strong> em <strong>analista_de_validacao_comercial</strong> sem sobrescrever</span></div>
-        </div>
-      </div>
-      <div class="card-alert alert-info">
-        <div class="alert-icon">ℹ️</div>
-        <div class="alert-text">Este workflow é a salvaguarda do sistema. Qualquer deal que chegue em "Para Validação" sem analista atribuído — independente da origem — será coberto por ele.</div>
-      </div>
-      <div class="card-props">
-        <span class="props-lbl">Propriedades:</span>
-        <span class="prop-tag prop-hs">dealstage</span>
-        <span class="prop-tag prop-hs">analista_de_validacao_comercial</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════
-     FASE 2 — ANÁLISE MANUAL
-═══════════════════════════════════════ -->
-<div class="phase-container">
-  <div class="sec-head">
-    <div class="sec-icon">2</div>
-    <div class="sec-title">Fase 2 — Análise Manual pelo Analista</div>
-    <div class="sec-line"></div>
-  </div>
-
-  <div class="phase-header ph-bege">
-    <div class="phase-num num-dark">2</div>
-    <div class="phase-info">
-      <div class="phase-tag tag-dark">Ação Manual · Pipeline de Validação Comercial</div>
-      <div class="phase-title title-dark">Analista revisa o negócio e preenche o resultado da validação</div>
-      <div class="phase-subtitle sub-dark">Esta é a única fase inteiramente manual do ciclo de validação. O que o analista preencher aqui determina qual caminho o negócio seguirá nas fases 3A e 3B.</div>
-    </div>
-    <div class="phase-meta">
-      <div class="meta-pill mp-rubi">⏱ Tempo variável (SLA não definido)</div>
-      <div class="meta-pill mp-rubi">👤 Analista de Validação Comercial</div>
-    </div>
-  </div>
-
-  <div class="phase-grid">
-    <div class="card card-pale">
-      <div class="card-stripe stripe-manual"></div>
-      <div class="card-head">
-        <div>
-          <div class="card-id">Ação Manual · Estágio: Para Validação (1288618541)</div>
-          <div class="card-title">O que o analista precisa fazer</div>
-        </div>
-        <div class="card-status status-manual">✋ Manual</div>
-      </div>
-      <div class="card-body">
-        <div class="resp-section">
-          <div class="resp-label">Responsável</div>
-          <div class="resp-pills">
-            <div class="resp-pill"><div class="resp-dot rd-rubi"></div>Joao Vitor ou Leticia Ananda</div>
+        <div class="wf-body">
+          <div class="trigger-box">
+            <div class="trigger-label">Gatilho</div>
+            Negócio em 'Alocação' (Fluxo ACR) e 4 campos de alocação preenchidos.
           </div>
-        </div>
-        <div class="actions-list">
-          <div class="action"><div class="act-num num-bege">1</div><span>Revisar todos os dados do negócio — documentos, informações do beneficiário e da usina</span></div>
-          <div class="action"><div class="act-num num-bege">2</div><span>Se <strong>aprovado sem pendências:</strong> preencher <strong>existe_pendencia_para_validacao_comercial = false</strong></span></div>
-          <div class="action"><div class="act-num num-bege">3</div><span>Se <strong>há pendências corrigíveis:</strong> preencher <strong>existe_pendencia_para_validacao_comercial = true</strong> e escolher o valor correto em <strong>pendencia_comercial_validacao</strong></span></div>
-          <div class="action"><div class="act-num num-bege">4</div><span>Se <strong>cancelamento</strong> (ex: fraude): preencher <strong>existe_pendencia_para_validacao_comercial = true</strong> com valor de cancelamento na lista</span></div>
-        </div>
-      </div>
-      <div class="card-alert alert-crit">
-        <div class="alert-icon">🚨</div>
-        <div class="alert-text"><strong>Campo existe_pendencia_para_validacao_comercial é o coração do sistema.</strong> Se não for preenchido após a análise, nenhum workflow subsequente é acionado e o deal fica parado indefinidamente em "Para Validação" sem nenhum alerta.</div>
-      </div>
-    </div>
-
-    <div class="card card-white">
-      <div class="card-stripe stripe-signal"></div>
-      <div class="card-head">
-        <div>
-          <div class="card-id">Propriedades críticas desta fase</div>
-          <div class="card-title">Campos que controlam o roteamento pós-análise</div>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="actions-list" style="gap:10px;">
-          <div class="action"><div class="act-num num-signal">①</div><div><strong>existe_pendencia_para_validacao_comercial</strong><br/><span style="font-size:11px;">false = aprovado · true = pendência/cancelamento · vazio = revalidação em curso</span></div></div>
-          <div class="action"><div class="act-num num-signal">②</div><div><strong>pendencia_comercial_validacao</strong><br/><span style="font-size:11px;">Deve usar valores da lista cadastrada. Texto livre ou valores não mapeados travam o WF3.</span></div></div>
-          <div class="action"><div class="act-num num-signal">③</div><div><strong>analista_de_validacao_comercial</strong><br/><span style="font-size:11px;">Preenchido automaticamente na Fase 1. Nunca é sobrescrito por nenhum dos 5 WFs.</span></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════
-     FASE 3A — APROVAÇÃO E FECHAMENTO
-═══════════════════════════════════════ -->
-<div class="phase-container">
-  <div class="sec-head">
-    <div class="sec-icon">3</div>
-    <div class="sec-title">Fase 3A — Aprovação e Fechamento</div>
-    <div class="sec-line"></div>
-  </div>
-
-  <div class="phase-header ph-rubi">
-    <div class="phase-num num-light">3A</div>
-    <div class="phase-info">
-      <div class="phase-tag tag-light">WF 1767681408</div>
-      <div class="phase-title title-light">Analista aprova → deal movido para "Validados" e depois fechado no pipeline original</div>
-      <div class="phase
-
--subtitle sub-light">Quando existe_pendencia = false, dois workflows trabalham em sequência para validar e fechar o negócio</div>
-    </div>
-    <div class="phase-meta">
-      <div class="meta-pill mp-light">⏱ Imediato (automático)</div>
-      <div class="meta-pill mp-light">🤖 100% automático</div>
-      <div class="meta-pill mp-light">WFs 1767681408</div>
-    </div>
-  </div>
-
-  <div class="phase-grid">
-    <div class="card card-white">
-      <div class="card-stripe stripe-rubi"></div>
-      <div class="card-head">
-        <div>
-          <div class="card-id">WF · ID 1767681408</div>
-          <div class="card-title">Fluxo de Validação 2 — Validados para Fechado</div>
-        </div>
-        <div class="card-status status-hs">● Ativo</div>
-      </div>
-      <div class="card-body">
-        <div class="col-label">Gatilho</div>
-        <div class="trig-box">
-          <div class="trig-text"><strong>existe_pendencia_para_validacao_comercial = false</strong> AND dealstage = Para Validação (<span class="mono">1288618541</span>)</div>
-        </div>
-        <div class="col-label" style="margin-top:12px;">O que acontece</div>
-        <div class="actions-list">
-          <div class="action"><div class="act-num num-rubi">1</div><span>dealstage → <strong>Validados</strong> (<span class="mono">1288618543</span>) no Pipeline de Validação Comercial</span></div>
-          <div class="action"><div class="act-num num-rubi">2</div><span>Aguarda 1 minuto</span></div>
-          <div class="action"><div class="act-num num-rubi">3</div><span>Verifica o pipeline de origem do deal usando datas de entrada (<span class="mono">hs_v2_date_entered_*</span>)</span></div>
-          <div class="action"><div class="act-num num-rubi">4</div><span>Marketplace → dealstage = <strong>Negócio Fechado</strong> (<span class="mono">1033613972</span>)</span></div>
-          <div class="action"><div class="act-num num-rubi">5</div><span>Sunne Vendas → dealstage = <strong>Concluído</strong> (<span class="mono">235469753</span>)</span></div>
-          <div class="action"><div class="act-num num-rubi">6</div><span>Funil Gestão → dealstage = <strong>Negócio Fechado</strong> (<span class="mono">48002836</span>)</span></div>
-          <div class="action"><div class="act-num num-rubi">7</div><span>iGreen/Alexandria → move para pipeline <strong>Fluxo de Alocação/Cobrança/Rateio</strong>, estágio Alocação (<span class="mono">1119360528</span>)</span></div>
-        </div>
-      </div>
-      <div class="card-alert alert-info">
-        <div class="alert-icon">ℹ️</div>
-        <div class="alert-text"><strong>iGreen e Alexandria</strong> são criados diretamente no Pipeline de Validação Comercial — ao serem aprovados, vão direto para o Fluxo de Alocação, pulando a etapa de Passagem de Bastão.</div>
-      </div>
-      <div class="card-props">
-        <span class="props-lbl">Propriedades:</span>
-        <span class="prop-tag prop-hs">existe_pendencia_para_validacao_comercial</span>
-        <span class="prop-tag prop-hs">dealstage</span>
-        <span class="prop-tag prop-hs">pipeline</span>
-      </div>
-    </div>
-
-    <div class="card card-white">
-      <div class="card-stripe stripe-signal"></div>
-      <div class="card-head">
-        <div>
-          <div class="card-id">Resultado por pipeline de origem</div>
-          <div class="card-title">Destino final do negócio após aprovação</div>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="stage-table-wrap">
-          <table class="stage-table">
-            <thead><tr>
-              <th>Pipeline de Origem</th>
-              <th>Estágio Final</th>
-              <th>Próxima Fase</th>
-            </tr></thead>
-            <tbody>
-              <tr>
-                <td>Marketplace | Vendas</td>
-                <td><span class="t-stage-name">Negócio Fechado</span><span class="t-stage-id">1033613972</span></td>
-                <td>Fase 4 — Passagem de Bastão</td>
-              </tr>
-              <tr>
-                <td>Sunne Vendas</td>
-                <td><span class="t-stage-name">Concluído</span><span class="t-stage-id">235469753</span></td>
-                <td>Fase 4 — Passagem de Bastão</td>
-              </tr>
-              <tr>
-                <td>Funil Sunne Gestão</td>
-                <td><span class="t-stage-name">Negócio Fechado</span><span class="t-stage-id">48002836</span></td>
-                <td>Fase 4 — Passagem de Bastão</td>
-              </tr>
-              <tr>
-                <td>iGreen / Alexandria</td>
-                <td><span class="t-stage-name">Alocação</span><span class="t-stage-id">1119360528</span></td>
-                <td>Fase 5 — Alocação (direto)</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════
-     FASE 3B — PENDÊNCIAS E CANCELAMENTO
-═══════════════════════════════════════ -->
-<div class="phase-container">
-  <div class="sec-head">
-    <div class="sec-icon">3</div>
-    <div class="sec-title">Fase 3B — Pendências e Cancelamento</div>
-    <div class="sec-line"></div>
-  </div>
-
-  <div class="phase-header ph-magenta">
-    <div class="phase-num num-light">3B</div>
-    <div class="phase-info">
-      <div class="phase-tag tag-white">WFs 1767629431 + 1767682460</div>
-      <div class="phase-title title-light">Analista encontra problemas → deal vai para Pendências ou Cancelados</div>
-      <div class="phase-subtitle sub-white">Quando existe_pendencia = true, o WF3 avalia o tipo de pendência e roteia o deal. Se corrigível, o closer recebe notificação e tem chance de reenviar para validação.</div>
-    </div>
-    <div class="phase-meta">
-      <div class="meta-pill mp-light">🔁 Loop possível com Fase 1</div>
-      <div class="meta-pill mp-light">👤 Closer do negócio</div>
-    </div>
-  </div>
-
-  <div class="phase-grid">
-    <div class="card card-white">
-      <div class="card-stripe stripe-magenta"></div>
-      <div class="card-head">
-        <div>
-          <div class="card-id">WF · ID 1767629431</div>
-          <div class="card-title">Fluxo de Validação 3 — Pendências e Cancelamentos</div>
-        </div>
-        <div class="card-status status-hs">● Ativo</div>
-      </div>
-      <div class="card-body">
-        <div class="col-label">Gatilho</div>
-        <div class="trig-box">
-          <div class="trig-text"><strong>existe_pendencia_para_validacao_comercial = true</strong> AND dealstage = Para Validação (<span class="mono">1288618541</span>)</div>
-        </div>
-        <div class="col-label" style="margin-top:12px;">Lógica de Roteamento por tipo de pendência</div>
-        <div class="actions-list">
-          <div class="action"><div class="act-num num-rubi">1</div><span>Verifica o valor de <strong>pendencia_comercial_validacao</strong></span></div>
-          <div class="action"><div class="act-num num-rubi">2</div><span><strong>Pendência corrigível:</strong> move para <strong>Pendências</strong> (<span class="mono">1288618542</span>) no Pipeline de Validação → aguarda 2 min → notifica closer (<strong>hubspot_owner_id</strong> + <strong>closer_responsavel</strong>) → move deal de volta para Validação Comercial no pipeline original</span></div>
-          <div class="action"><div class="act-num num-rubi">3</div><span><strong>Motivo de cancelamento</strong> (ex: fraude, fora de perfil): move para <strong>Cancelados</strong> (<span class="mono">1288618544</span>) no Pipeline de Validação → move para Negócio Perdido/Descartado no pipeline original</span></div>
-        </div>
-      </div>
-      <div class="card-alert alert-warn">
-        <div class="alert-icon">⚠️</div>
-        <div class="alert-text">Se <strong>hubspot_owner_id</strong> ou <strong>closer_responsavel</strong> estiverem vazios no deal, a notificação não chega a ninguém. O closer não sabe que precisa corrigir algo. Se o valor em <strong>pendencia_comercial_validacao</strong> não estiver na lista mapeada, o deal não cai em nenhum branch e fica parado.</div>
-      </div>
-      <div class="card-props">
-        <span class="props-lbl">Propriedades:</span>
-        <span class="prop-tag prop-hs">existe_pendencia_para_validacao_comercial</span>
-        <span class="prop-tag prop-hs">pendencia_comercial_validacao</span>
-        <span class="prop-tag prop-hs">hubspot_owner_id</span>
-        <span class="prop-tag prop-hs">closer_responsavel</span>
-        <span class="prop-tag prop-hs">dealstage</span>
-      </div>
-    </div>
-
-    <div class="card card-white">
-      <div class="card-stripe stripe-magenta"></div>
-      <div class="card-head">
-        <div>
-          <div class="card-id">WF · ID 1767682460</div>
-          <div class="card-title">Fluxo de Validação 4 — Revalidação após Correção</div>
-        </div>
-        <div class="card-status status-hs">● Ativo</div>
-      </div>
-      <div class="card-body">
-        <div class="col-label">Gatilho — quando o closer corrige e reenvia</div>
-        <div class="trig-box">
-          <div class="trig-text">dealstage volta para Validação Comercial no pipeline original AND <strong>existe_pendencia_para_validacao_comercial está vazia</strong> (o closer deve limpar o campo após corrigir) AND <strong>hs_v2_date_entered_1288618541 está preenchido</strong> (deal já passou pelo pipe de validação antes)</div>
-        </div>
-        <div class="col-label" style="margin-top:12px;">O que acontece</div>
-        <div class="actions-list">
-          <div class="action"><div class="act-num num-rubi">1</div><span>Move para <strong>Para Validação</strong> (<span class="mono">1288618541</span>) — reiniciando o ciclo</span></div>
-          <div class="action"><div class="act-num num-rubi">2</div><span>Atribui analista por rodízio em <strong>analista_de_validacao_comercial</strong> (sem sobrescrever se já tiver)</span></div>
-        </div>
-      </div>
-      <div class="card-alert alert-crit">
-        <div class="alert-icon">🚨</div>
-        <div class="alert-text"><strong>O closer precisa limpar o campo existe_pendencia_para_validacao_comercial.</strong> Se corrigir os dados mas deixar o campo preenchido, este workflow não aciona e o deal fica travado em Validação Comercial do pipeline original para sempre.</div>
-      </div>
-      <div class="card-props">
-        <span class="props-lbl">Propriedades:</span>
-        <span class="prop-tag prop-hs">dealstage</span>
-        <span class="prop-tag prop-hs">existe_pendencia_para_validacao_comercial</span>
-        <span class="prop-tag prop-hs">hs_v2_date_entered_1288618541</span>
-        <span class="prop-tag prop-hs">analista_de_validacao_comercial</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════
-     FASE 4 — PASSAGEM DE BASTÃO
-═══════════════════════════════════════ -->
-<div class="phase-container">
-  <div class="sec-head">
-    <div class="sec-icon">4</div>
-    <div class="sec-title">Fase 4 — Passagem de Bastão Comercial → CS</div>
-    <div class="sec-line"></div>
-  </div>
-
-  <div class="phase-header ph-rubi">
-    <div class="phase-num num-light">4</div>
-    <div class="phase-info">
-      <div class="phase-tag tag-light">WF · ID 1653033997</div>
-      <div class="phase-title title-light">Negócio fechado no Marketplace ou Sunne Vendas → transferido para CS com ou sem troca de titularidade</div>
-      <div class="phase-subtitle sub-light">Aplica-se apenas a Marketplace | Vendas e Sunne Vendas para deals criados após 09/05/2025. Funil Gestão, iGreen e Alexandria não passam por esta fase.</div>
-    </div>
-    <div class="phase-meta">
-      <div class="meta-pill mp-light">⏱ Imediato (automático)</div>
-      <div class="meta-pill mp-light">WF · ID 1653033997</div>
-      <div class="meta-pill mp-light">🔁 Reinscrição: Não</div>
-    </div>
-  </div>
-
-  <div class="phase-grid">
-    <div class="card card-white">
-      <div class="card-stripe stripe-rubi"></div>
-      <div class="card-head">
-        <div>
-          <div class="card-id">WF · ID 1653033997 · rev. 36</div>
-          <div class="card-title">Nova Passagem de Bastão Comercial ↔ CS — Beneficiários — Marketplace, PAP, POC e Autoatendimento</div>
-        </div>
-        <div class="card-status status-hs">● Ativo</div>
-      </div>
-      <div class="card-body">
-        <div class="col-label">Gatilho</div>
-        <div class="trig-box">
-          <div class="trig-text">Deal no pipeline <strong>Marketplace | Vendas</strong> (<span class="mono">707007820</span>) atinge estágio <strong>Negócio Fechado</strong> (<span class="mono">1033613972</span>). Apenas deals criados <strong>após 09/05/2025</strong>. Não reinscreve.</div>
-        </div>
-        <div class="col-label" style="margin-top:12px;">Lógica principal — branch troca_de_titularidade</div>
-        <div class="actions-list">
-          <div class="action"><div class="act-num num-rubi">1</div><span>Verifica <strong>troca_de_titularidade</strong></span></div>
-          <div class="action"><div class="act-num num-rubi">2</div><span><strong>true:</strong> segue fluxo de titularidade (path dedicado fora do escopo deste documento)</span></div>
-          <div class="action"><div class="act-num num-rubi">3</div><span><strong>false:</strong> move deal para pipeline <strong>Fluxo de Alocação/Cobrança/Rateio</strong>, estágio <strong>Alocação</strong> (<span class="mono">1119360528</span>)</span></div>
-        </div>
-      </div>
-      <div class="card-alert alert-warn">
-        <div class="alert-icon">⚠️</div>
-        <div class="alert-text">Este workflow aplica-se apenas ao <strong>Marketplace | Vendas</strong>. Para Sunne Vendas, verificar se existe workflow equivalente configurado. Funil Gestão, iGreen e Alexandria chegam ao Fluxo de Alocação diretamente via WF2 da validação.</div>
-      </div>
-      <div class="card-props">
-        <span class="props-lbl">Propriedades:</span>
-        <span class="prop-tag prop-hs">troca_de_titularidade</span>
-        <span class="prop-tag prop-hs">pipeline</span>
-        <span class="prop-tag prop-hs">dealstage</span>
-        <span class="prop-tag prop-hs">hs_createdate</span>
-      </div>
-    </div>
-
-    <div class="card card-pale">
-      <div class="card-stripe stripe-manual"></div>
-      <div class="card-head">
-        <div>
-          <div class="card-id">Resumo de quem passa por esta fase</div>
-          <div class="card-title">Pipelines de origem × destino na Fase 4</div>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="stage-table-wrap">
-          <table class="stage-table">
-            <thead><tr>
-              <th>Pipeline</th>
-              <th>Passa pela Fase 4?</th>
-              <th>Como chega na Alocação</th>
-            </tr></thead>
-            <tbody>
-              <tr>
-                <td>Marketplace | Vendas</td>
-                <td>✅ Sim</td>
-                <td>WF 1653033997 (troca = false)</td>
-              </tr>
-              <tr>
-                <td>Sunne Vendas</td>
-                <td>✅ Sim</td>
-                <td>WF equivalente (verificar)</td>
-              </tr>
-              <tr>
-                <td>Funil Sunne Gestão</td>
-                <td>❌ Não</td>
-                <td>WF2 Validação move direto</td>
-              </tr>
-              <tr>
-                <td>iGreen / Alexandria</td>
-                <td>❌ Não</td>
-                <td>WF2 Validação move direto</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- ═══════════════════════════════════════
-     FASE 5 — ALOCAÇÃO
-═══════════════════════════════════════ -->
-<div class="phase-container">
-  <div class="sec-head">
-    <div class="sec-icon">5</div>
-    <div class="sec-title">Fase 5 — Alocação</div>
-    <div class="sec-line"></div>
-  </div>
-
-  <div class="phase-header ph-rubi">
-    <div class="phase-num num-light">5</div>
-    <div class="phase-info">
-      <div class="phase-tag tag-light">WF · ID 1694901337 · Pipeline: Fluxo de Alocação</div>
-      <div class="phase-title title-light">CS preenche dados da usina → automação avança para Cobrança</div>
-      <div class="phase-subtitle sub-light">Fase manual com gatilho automático. Quando os 4 campos obrigatórios são preenchidos, o workflow move o deal imediatamente.</div>
-    </div>
-    <div class="phase-meta">
-      <div class="meta-pill mp-light">⏱ Imediato (quando campos preenchidos)</div>
-      <div class="meta-pill mp-light">👤 CS / Operações</div>
-      <div class="meta-pill mp-light">🔁 Reinscrição: Sim</div>
-    </div>
-  </div>
-
-  <div class="phase-grid">
-    <div class="card card-pale">
-      <div class="card-stripe stripe-manual"></div>
-      <div class="card-head">
-        <div>
-          <div class="card-id">Ação Manual · Estágio: Alocação (1119360528)</div>
-          <div class="card-title">CS preenche os dados da usina e do gerador</div>
-        </div>
-        <div class="card-status status-manual">✋ Manual</div>
-      </div>
-      <div class="card-body">
-        <div class="resp-section">
-          <div class="resp-label">Responsável</div>
-          <div class="resp-pills">
-            <div class="resp-pill rp-signal"><div class="resp-dot rd-signal"></div>CS / Operações</div>
+          <div class="condition-list">
+            <li class="condition-item">
+              <div class="condition-icon">✅</div>
+              <div class="prop">`gerador_alocacao`</div>
+              <div class="desc">Preenchido.</div>
+            </li>
+            <li class="condition-item">
+              <div class="condition-icon">✅</div>
+              <div class="prop">`id_usina_alocacao_e_rateio`</div>
+              <div class="desc">Preenchido.</div>
+            </li>
+            <li class="condition-item">
+              <div class="condition-icon">✅</div>
+              <div class="prop">`id_gerador_alocacao_e_rateio`</div>
+              <div class="desc">Preenchido.</div>
+            </li>
+            <li class="condition-item">
+              <div class="condition-icon">✅</div>
+              <div class="prop">`data_de_entrada_no_estagio_de_alocacao`</div>
+              <div class="desc">Preenchido.</div>
+            </li>
           </div>
-        </div>
-        <div class="col-label">Campos obrigatórios para avançar</div>
-        <div class="actions-list">
-          <div class="action"><div class="act-num num-bege">1</div><span><strong>nome_da_usina</strong> — nome da usina solar</span></div>
-          <div class="action"><div class="act-num num-bege">2</div><span><strong>id_gerador_alocacao_e_rateio</strong> — ID do gerador no sistema</span></div>
-          <div class="action"><div class="act-num num-bege">3</div><span><strong>id_usina_alocacao_e_rateio</strong> — ID da usina no sistema</span></div>
-          <div class="action"><div class="act-num num-bege">4</div><span><strong>gerador_alocacao</strong> — identificação do gerador para alocação</span></div>
-        </div>
-      </div>
-      <div class="card-alert alert-warn">
-        <div class="alert-icon">⚠️</div>
-        <div class="alert-text">Todos os 4 campos precisam estar preenchidos simultaneamente. Se qualquer um estiver vazio, o WF não aciona e o deal fica parado em Alocação sem alerta.</div>
-      </div>
-    </div>
-
-    <div class="card card-white">
-      <div class="card-stripe stripe-rubi"></div>
-      <div class="card-head">
-        <div>
-          <div class="card-id">WF · ID 1694901337</div>
-          <div class="card-title">(Fluxo de Alocação) Movimentação para Cobrança</div>
-        </div>
-        <div class="card-status status-hs">● Ativo</div>
-      </div>
-      <div class="card-body">
-        <div class="col-label">Gatilho (todas as condições simultâneas)</div>
-        <div class="trig-box">
-          <div class="trig-text">dealstage = Alocação (<span class="mono">1119360528</span>) AND <strong>nome_da_usina</strong> preenchido AND <strong>id_gerador_alocacao_e_rateio</strong> preenchido AND <strong>id_usina_alocacao_e_rateio</strong> preenchido AND <strong>gerador_alocacao</strong> preenchido. Reinscrição por mudança em nome_da_usina ou por mudança de dealstage.</div>
-        </div>
-        <div class="col-label" style="margin-top:12px;">O que acontece</div>
-        <div class="actions-list">
-          <div class="action"><div class="act-num num-rubi">1</div><span>dealstage → <strong>Cobrança</strong> (<span class="mono">1119360529</span>)</span></div>
-          <div class="action"><div class="act-num num-rubi">2</div><span><strong>ticket_de_cobranca</strong> → <span class="mono">false</span> (sinaliza que o ticket ainda não foi gerado)</span></div>
-        </div>
-      </div>
-      <div class="card-props">
-        <span class="props-lbl">Propriedades-chave:</span>
-        <span class="prop-tag prop-hs">nome_da_usina</span>
-        <span class="prop-tag prop-hs">id_gerador_alocacao_e_rateio</span>
-        <span class="prop-tag prop-hs">id_usina_alocacao_e_rateio</span>
-        <span class="prop-tag prop-hs">gerador_alocacao</span>
-        <span class="prop-tag prop-hs">ticket_de_cobranca</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════
-     FASE 6 — COBRANÇA E TICKET
-═══════════════════════════════════════ -->
-<div class="phase-container">
-  <div class="sec-head">
-    <div class="sec-icon">6</div>
-    <div class="sec-title">Fase 6 — Cobrança e Geração do Ticket</div>
-    <div class="sec-line"></div>
-  </div>
-
-  <div class="phase-header ph-bege">
-    <div class="phase-num num-dark">6</div>
-    <div class="phase-info">
-      <div class="phase-tag tag-dark">Ação Manual + n8n · Objeto: Ticket</div>
-      <div class="phase-title title-dark">Deal em Cobrança → ticket criado pelo n8n → pagamento confirmado → cadeia de contratos</div>
-      <div class="phase-subtitle sub-dark">A partir desta fase o objeto principal passa a ser o Ticket. O n8n "Criação de Tickets" roda nos horários programados e cria automaticamente os tickets para deals em Cobrança.</div>
-    </div>
-    <div class="phase-meta">
-      <div class="meta-pill mp-rubi">⏱ Depende do horário do n8n</div>
-      <div class="meta-pill mp-rubi">👤 n8n + Financeiro</div>
-      <div class="meta-pill mp-rubi">🎫 Objeto: Ticket</div>
-    </div>
-  </div>
-
-  <div class="phase-grid">
-    <div class="card card-warm">
-      <div class="card-stripe stripe-solar"></div>
-      <div class="card-head">
-        <div>
-          <div class="card-id">n8n · Criação de Tickets</div>
-          <div class="card-title">n8n detecta deals em Cobrança e cria os tickets automaticamente</div>
-        </div>
-        <div class="card-status status-n8n">🔶 n8n</div>
-      </div>
-      <div class="card-body">
-        <div class="resp-section">
-          <div class="resp-label">Horários de execução</div>
-          <div class="resp-pills">
-            <div class="resp-pill rp-solar"><div class="resp-dot rd-solar"></div>Atual: 13h e 19h</div>
-            <div class="resp-pill rp-solar"><div class="resp-dot rd-solar"></div>Sugerido: 07h / 13h / 19:20h ✅</div>
+          <div class="action-flow">
+            <div class="action-node"><div class="label">Ação</div>Move para 'Cobrança' (Fluxo ACR)</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node"><div class="label">Ação</div>Define `ticket_de_cobranca` = `false`</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node terminal"><div class="label">Resultado</div>Negócio pronto para criação de ticket de cobrança</div>
           </div>
-        </div>
-        <div class="col-label">Tempo médio de execução</div>
-        <div class="trig-box">
-          <div class="trig-text"><strong>00:01</strong> — processo rápido. Cria ticket de cobrança e associa ao negócio. Escreve <strong>ticket_de_cobranca = true</strong> no deal.</div>
-        </div>
-      </div>
-      <div class="card-props">
-        <span class="props-lbl">Sinal de saída:</span>
-        <span class="prop-tag prop-n8n">ticket_de_cobranca = true</span>
-        <span class="prop-tag prop-n8n">Ticket associado ao negócio</span>
-      </div>
-    </div>
-
-    <div class="card card-white">
-      <div class="card-stripe stripe-signal"></div>
-      <div class="card-head">
-        <div>
-          <div class="card-id">Ação Manual · Financeiro</div>
-          <div class="card-title">Confirmação de pagamento e disparo da cadeia de contratos</div>
-        </div>
-        <div class="card-status status-manual">✋ Manual</div>
-      </div>
-      <div class="card-body">
-        <div class="resp-section">
-          <div class="resp-label">Responsável</div>
-          <div class="resp-pills">
-            <div class="resp-pill rp-signal"><div class="resp-dot rd-signal"></div>CS / Financeiro</div>
-          </div>
-        </div>
-        <div class="actions-list" style="gap:10px;">
-          <div class="action"><div class="act-num num-bege">1</div><span>Cobrança enviada ao beneficiário</span></div>
-          <div class="action"><div class="act-num num-bege">2</div><span>Ao confirmar: ticket → Status <strong>"Pagamento Confirmado"</strong> ou <strong>"Pagamento Agendado"</strong></span></div>
-          <div class="action"><div class="act-num num-bege">3</div><span>Esse status dispara o WF Ticket 1 (início da Fase 7)</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════
-     FASE 7 — CONTRATOS E ASSINATURA
-═══════════════════════════════════════ -->
-<div class="phase-container">
-  <div class="sec-head">
-    <div class="sec-icon">7</div>
-    <div class="sec-title">Fase 7 — Contratos, Assinatura Digital e Cadastro no OPS</div>
-    <div class="sec-line"></div>
-  </div>
-
-  <div class="phase-header ph-solar">
-    <div class="phase-num num-orange">7</div>
-    <div class="phase-info">
-      <div class="phase-tag tag-dark">6 Workflows HubSpot + 5 Handoffs n8n · Cadeia sequencial</div>
-      <div class="phase-title title-dark">Do pagamento confirmado ao cadastro no OPS — totalmente automatizado</div>
-      <div class="phase-subtitle sub-dark">Cada etapa depende do sinal da anterior. Os horários dos fluxos n8n foram calibrados para respeitar o tempo médio de execução de cada processo.</div>
-    </div>
-    <div class="phase-meta">
-      <div class="meta-pill mp-rubi">🎫 Objeto: Ticket</div>
-      <div class="meta-pill mp-rubi">🔶 5 Integrações n8n</div>
-      <div class="meta-pill mp-rubi">📄 ClickSign + Google Drive + OPS</div>
-    </div>
-  </div>
-
-  <!-- Tabela de horários n8n -->
-  <div class="card card-white" style="margin-bottom:20px;">
-    <div class="card-stripe stripe-solar"></div>
-    <div class="card-head">
-      <div>
-        <div class="card-id">Referência de Horários — todos os fluxos n8n desta fase e do ciclo completo</div>
-        <div class="card-title">Horários de execução atuais × sugestão aprovada</div>
-      </div>
-      <div class="card-status status-n8n">🔶 n8n</div>
-    </div>
-    <div class="card-body" style="padding:0;">
-      <div class="stage-table-wrap">
-        <table class="stage-table">
-          <thead><tr>
-            <th>#</th>
-            <th>Fluxo n8n</th>
-            <th>Horário Atual</th>
-            <th>Tempo Médio</th>
-            <th>Horário Sugerido ✅</th>
-          </tr></thead>
-          <tbody>
-            <tr><td>1</td><td>Criação de Tickets</td><td>13h e 19h</td><td>00:01</td><td>07h / 13h / 19:20h</td></tr>
-            <tr><td>2</td><td>Geração de Contratos</td><td>01:00h</td><td>00:30</td><td>08h / 14h</td></tr>
-            <tr><td>3</td><td>Envio de Contratos ClickSign</td><td>05:00h</td><td>01:30</td><td>10h / 16h</td></tr>
-            <tr><td>4</td><td>Checa se todos os contratos foram enviados</td><td>12:30h</td><td>00:16</td><td>12:30h / 18:30h</td></tr>
-            <tr><td>5</td><td>Checa se todos os deals foram assinados</td><td>00:30h</td><td>00:02</td><td>07:10h / 13:10h / 19:30h</td></tr>
-            <tr><td>6</td><td>Baixar Documentos</td><td>14:00h</td><td>01:40</td><td>20h</td></tr>
-            <tr><td>7</td><td>Cadastra beneficiários no OPS</td><td>08:00h</td><td>01:30</td><td>03h</td></tr>
-            <tr><td>8</td><td>Verifica se todos os cadastros do OPS foram feitos</td><td>13h</td><td>00:10</td><td>06:30h</td></tr>
-            <tr><td>9</td><td>Mescla os tickets</td><td>09:00h</td><td>00:01</td><td>07:05h / 13:05h / 19:25h</td></tr>
-            <tr><td>10</td><td>Remover Associações Pagamento Recusado/rateio cancelado</td><td>22:00h</td><td>00:01</td><td>07:15h / 13:15h / 19:35h</td></tr>
-            <tr><td>11</td><td>Fluxo de Tempo no Status dos Tickets</td><td>—</td><td>—</td><td>06:50h / 11:50h / 17:50h</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- Cadeia sequencial -->
-  <div class="entry-node" style="margin-bottom:8px;">
-    <div class="node-emoji">🎫</div>
-    <div class="node-body">
-      <div class="node-label">Ponto de entrada</div>
-      <div class="node-title">Ticket com Status = "Pagamento Confirmado" ou "Pagamento Agendado"</div>
-      <div class="node-desc">Dispara o WF Ticket 1 e toda a cadeia subsequente.</div>
-    </div>
-  </div>
-
-  <div class="signal-row"><div class="signal-chip">HubSpot detecta o status → executa WF Ticket 1</div></div>
-
-  <div class="step-row">
-    <div class="step-aside">
-      <div class="step-badge badge-hs">T1</div>
-      <div class="step-type-lbl lbl-hs">HubSpot</div>
-      <div class="step-vline"></div>
-    </div>
-    <div class="step-body">
-      <div class="card card-white">
-        <div class="card-stripe stripe-rubi"></div>
-        <div class="card-head">
-          <div>
-            <div class="card-id">WF Ticket · ID 1697798163</div>
-            <div class="card-title">Pagamento Confirmado ou Agendado → Gerar Contratos</div>
-          </div>
-          <div class="card-status status-hs">● Ativo</div>
-        </div>
-        <div class="card-body">
-          <div class="two-col">
+          <div class="alert warning">
+            <div class="alert-icon">⚠️</div>
             <div>
-              <div class="col-label">O que acontece</div>
-              <div class="actions-list">
-                <div class="action"><div class="act-num num-rubi">1</div><span>Negócio associado: dealstage → <strong>Assinatura</strong> (<span class="mono">1119360530</span>)</span></div>
-                <div class="action"><div class="act-num num-rubi">2</div><span>Negócio: proprietário → responsável fixo</span></div>
-                <div class="action"><div class="act-num num-rubi">3</div><span>Ticket: proprietário → responsável fixo</span></div>
-                <div class="action"><div class="act-num num-rubi">4</div><span>Ticket: Status → <strong>"Gerar Contratos"</strong></span></div>
-              </div>
-            </div>
-            <div>
-              <div class="col-label">Atenção</div>
-              <div class="card-alert alert-warn" style="margin:0;">
-                <div class="alert-icon">⚠️</div>
-                <div class="alert-text" style="font-size:11px;">Responsável fixo hardcoded. Vínculo ticket ↔ negócio obrigatório.</div>
-              </div>
+              <div class="alert-title">ATENÇÃO · Campos de alocação incompletos</div>
+              Se qualquer um dos 4 campos estiver vazio, o WF não avança o deal para Cobrança. Sem alerta.
             </div>
           </div>
         </div>
-        <div class="card-props">
-          <span class="prop-tag prop-hs">Status do Ticket</span>
-          <span class="prop-tag prop-hs">dealstage (negócio)</span>
-          <span class="prop-tag prop-hs">hubspot_owner_id</span>
-        </div>
       </div>
     </div>
   </div>
+</section>
 
-  <div class="signal-row"><div class="signal-chip">Status = "Gerar Contratos" → n8n (Geração de Contratos) roda em 08h / 14h</div></div>
+<!-- ══════════════════════════════════════════════ -->
+<!--  SEÇÃO: COBRANÇA & CONTRATOS                  -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="section" id="contratos">
+  <div class="section-title">Fase 6-7: Cobrança & Contratos</div>
+  <div class="section-desc">Processo de cobrança, criação de tickets e automação de contratos via n8n.</div>
 
-  <div class="step-row">
-    <div class="step-aside">
-      <div class="step-badge badge-n8n">n8n</div>
-      <div class="step-type-lbl lbl-n8n">n8n · 2/5</div>
-      <div class="step-vline"></div>
-    </div>
-    <div class="step-body">
-      <div class="card card-warm">
-        <div class="card-stripe stripe-solar"></div>
-        <div class="card-head">
-          <div><div class="card-id">n8n · Geração de Contratos · 08h / 14h · tempo médio 00:30</div>
-          <div class="card-title">Gera os contratos com dados do beneficiário e da usina</div></div>
-          <div class="card-status status-n8n">🔶 n8n</div>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Fase 6: Cobrança e Geração do Ticket</div>
+      <div class="tl-desc">O time de CS/Financeiro inicia a cobrança e cria o ticket de rateio.</div>
+      <div class="tl-meta">Responsável: CS / Financeiro (manual)</div>
+      <div class="n8n-block">
+        <div class="n8n-label">Fluxo n8n: Criação de Tickets</div>
+        <div class="tl-desc">Monitora negócios em "Cobrança" com `ticket_de_cobranca` = `false`, agrupa por usina/gerador e cria um ticket de rateio no HubSpot, associando os negócios.</div>
+        <div class="tl-meta">Execução: 3x ao dia (7:00, 13:00, 19:20)</div>
+      </div>
+      <div class="alert warning">
+        <div class="alert-icon">⚠️</div>
+        <div>
+          <div class="alert-title">ATENÇÃO · Ticket sem vínculo com o negócio</div>
+          WF Ticket 1 e WF7 dependem da associação ticket → deal. Sem ela, a ação de mover dealstage é ignorada silenciosamente.
         </div>
-        <div class="card-body">
-          <div class="actions-list">
-            <div class="action"><div class="act-num num-solar">1</div><span>Coleta dados via API HubSpot</span></div>
-            <div class="action"><div class="act-num num-solar">2</div><span>Gera contratos com dados do beneficiário e da usina</span></div>
-            <div class="action"><div class="act-num num-solar">3</div><span>Escreve: <strong>Contratos do Ticket Gerados = verdadeiro</strong></span></div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot n8n-dot"></div>
+      <div class="tl-phase">Fase 7: Contratos, Assinatura e OPS</div>
+      <div class="tl-desc">Cadeia de automações para geração, envio, assinatura e baixa de documentos.</div>
+      <div class="tl-meta">Responsável: HubSpot + n8n (totalmente automático)</div>
+
+      <div class="wf-block">
+        <div class="wf-header">
+          <span class="wf-name">WF Ticket 1: Status → 'Gerar Contratos'</span>
+          <span class="wf-id">ID: 1697798163</span>
+        </div>
+        <div class="wf-body">
+          <div class="trigger-box">
+            <div class="trigger-label">Gatilho</div>
+            Ticket entra em 'Cobrança' (Pipeline de Cobrança).
+          </div>
+          <div class="action-flow">
+            <div class="action-node"><div class="label">Ação</div>Move Ticket para 'Gerar Contratos'</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node terminal"><div class="label">Resultado</div>Aciona n8n para geração de contratos</div>
           </div>
         </div>
-        <div class="card-props"><span class="prop-tag prop-n8n">Contratos do Ticket Gerados = verdadeiro</span></div>
       </div>
-    </div>
-  </div>
 
-  <div class="signal-row"><div class="signal-chip">"Contratos do Ticket Gerados" = verdadeiro → WF Ticket 2</div></div>
+      <div class="n8n-block">
+        <div class="n8n-label">Fluxo n8n: Geração de Contratos</div>
+        <div class="tl-desc">Gera os contratos e atualiza `contratos_do_ticket_gerados` = `true`.</div>
+        <div class="tl-meta">Execução: 3x ao dia (7:10, 13:10, 19:30) · Tempo médio: 00:30</div>
+      </div>
 
-  <div class="step-row">
-    <div class="step-aside">
-      <div class="step-badge badge-hs">T2</div>
-      <div class="step-type-lbl lbl-hs">HubSpot</div>
-      <div class="step-vline"></div>
-    </div>
-    <div class="step-body">
-      <div class="card card-white">
-        <div class="card-stripe stripe-rubi"></div>
-        <div class="card-head">
-          <div><div class="card-id">WF Ticket · ID 1754291845</div>
-          <div class="card-title">Contratos Gerados → Subir para ClickSign</div></div>
-          <div class="card-status status-hs">● Ativo</div>
+      <div class="wf-block">
+        <div class="wf-header">
+          <span class="wf-name">WF Ticket 2: Status → 'Subir Contratos ClickSign'</span>
+          <span class="wf-id">ID: 1754291845</span>
         </div>
-        <div class="card-body">
-          <div class="trig-box"><div class="trig-text">Status = "Gerar Contratos" AND <strong>Contratos do Ticket Gerados = verdadeiro</strong></div></div>
-          <div class="actions-list" style="margin-top:10px;">
-            <div class="action"><div class="act-num num-rubi">1</div><span>Status do Ticket → <strong>"Subir Contratos - ClickSign"</strong></span></div>
+        <div class="wf-body">
+          <div class="trigger-box">
+            <div class="trigger-label">Gatilho</div>
+            `contratos_do_ticket_gerados` = `true`.
+          </div>
+          <div class="action-flow">
+            <div class="action-node"><div class="label">Ação</div>Move Ticket para 'Subir Contratos ClickSign'</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node terminal"><div class="label">Resultado</div>Aciona n8n para envio ao ClickSign</div>
           </div>
         </div>
-        <div class="card-props"><span class="prop-tag prop-hs">Status do Ticket</span><span class="prop-tag prop-hs">Contratos do Ticket Gerados</span></div>
       </div>
-    </div>
-  </div>
 
-  <div class="signal-row"><div class="signal-chip">Status = "Subir Contratos - ClickSign" → n8n (Envio ClickSign) roda em 10h / 16h</div></div>
+      <div class="n8n-block">
+        <div class="n8n-label">Fluxo n8n: Envio ClickSign</div>
+        <div class="tl-desc">Envia contratos para o ClickSign e atualiza `contratos_do_ticket_no_clicksign` = `true`.</div>
+        <div class="tl-meta">Execução: 3x ao dia (7:40, 13:40, 20:00) · Tempo médio: 00:30</div>
+      </div>
 
-  <div class="step-row">
-    <div class="step-aside">
-      <div class="step-badge badge-n8n">n8n</div>
-      <div class="step-type-lbl lbl-n8n">n8n · 3/5</div>
-      <div class="step-vline"></div>
-    </div>
-    <div class="step-body">
-      <div class="card card-warm">
-        <div class="card-stripe stripe-solar"></div>
-        <div class="card-head">
-          <div><div class="card-id">n8n · Envio de Contratos ClickSign · 10h / 16h · tempo médio 01:30</div>
-          <div class="card-title">Upload e envio dos contratos para assinatura no ClickSign</div></div>
-          <div class="card-status status-n8n">🔶 n8n</div>
+      <div class="wf-block">
+        <div class="wf-header">
+          <span class="wf-name">WF Ticket 3: Status → 'Aguardando Assinatura'</span>
+          <span class="wf-id">ID: 1756086378</span>
         </div>
-        <div class="card-body">
-          <div class="actions-list">
-            <div class="action"><div class="act-num num-solar">1</div><span>Faz upload dos contratos para o ClickSign</span></div>
-            <div class="action"><div class="act-num num-solar">2</div><span>Configura signatários e posições de assinatura</span></div>
-            <div class="action"><div class="act-num num-solar">3</div><span>Escreve: <strong>Contratos do Ticket no ClickSign = verdadeiro</strong></span></div>
+        <div class="wf-body">
+          <div class="trigger-box">
+            <div class="trigger-label">Gatilho</div>
+            `contratos_do_ticket_no_clicksign` = `true`.
+          </div>
+          <div class="action-flow">
+            <div class="action-node"><div class="label">Ação</div>Move Ticket para 'Aguardando Assinatura'</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node terminal"><div class="label">Resultado</div>Aciona n8n para monitorar assinaturas</div>
           </div>
         </div>
-        <div class="card-props"><span class="prop-tag prop-n8n">Contratos do Ticket no ClickSign = verdadeiro</span></div>
       </div>
-    </div>
-  </div>
 
-  <div class="signal-row"><div class="signal-chip">"Contratos do Ticket no ClickSign" = verdadeiro → WF Ticket 3</div></div>
+      <div class="n8n-block">
+        <div class="n8n-label">Fluxo n8n: Checa Assinaturas</div>
+        <div class="tl-desc">Monitora o ClickSign e atualiza `contratos_de_negocios_associados_assinados` = `True` (case-sensitive).</div>
+        <div class="tl-meta">Execução: 3x ao dia (8:10, 14:10, 20:30) · Tempo médio: 01:00</div>
+      </div>
 
-  <div class="step-row">
-    <div class="step-aside">
-      <div class="step-badge badge-hs">T3</div>
-      <div class="step-type-lbl lbl-hs">HubSpot</div>
-      <div class="step-vline"></div>
-    </div>
-    <div class="step-body">
-      <div class="card card-white">
-        <div class="card-stripe stripe-rubi"></div>
-        <div class="card-head">
-          <div><div class="card-id">WF Ticket · ID 1756086378</div>
-          <div class="card-title">Contratos no ClickSign → Aguardando Assinatura</div></div>
-          <div class="card-status status-hs">● Ativo</div>
+      <div class="wf-block">
+        <div class="wf-header">
+          <span class="wf-name">WF Ticket 4: Status → 'Baixando Documentos'</span>
+          <span class="wf-id">ID: 1723227507</span>
         </div>
-        <div class="card-body">
-          <div class="trig-box"><div class="trig-text">Status = "Subir Contratos - ClickSign" AND <strong>Contratos do Ticket no ClickSign = verdadeiro</strong></div></div>
-          <div class="actions-list" style="margin-top:10px;">
-            <div class="action"><div class="act-num num-rubi">1</div><span>Status do Ticket → <strong>"Aguardando Assinatura"</strong></span></div>
+        <div class="wf-body">
+          <div class="trigger-box">
+            <div class="trigger-label">Gatilho</div>
+            `contratos_de_negocios_associados_assinados` = `True`.
+          </div>
+          <div class="action-flow">
+            <div class="action-node"><div class="label">Ação</div>Move Ticket para 'Baixando Documentos'</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node terminal"><div class="label">Resultado</div>Aciona n8n para baixar documentos</div>
           </div>
         </div>
-        <div class="card-props"><span class="prop-tag prop-hs">Status do Ticket</span><span class="prop-tag prop-hs">Contratos do Ticket no ClickSign</span></div>
       </div>
-    </div>
-  </div>
 
-  <div class="signal-row"><div class="signal-chip">n8n "Checa assinaturas" roda em 07:10h / 13:10h / 19:30h e verifica via webhook ClickSign</div></div>
+      <div class="n8n-block">
+        <div class="n8n-label">Fluxo n8n: Baixar Documentos</div>
+        <div class="tl-desc">Baixa documentos do ClickSign para o Drive e atualiza `link_anexos_do_drive` e `documentos_baixados` = `True` (case-sensitive).</div>
+        <div class="tl-meta">Execução: 3x ao dia (9:10, 15:10, 21:30) · Tempo médio: 01:40</div>
+      </div>
 
-  <div class="step-row">
-    <div class="step-aside">
-      <div class="step-badge badge-n8n">n8n</div>
-      <div class="step-type-lbl lbl-n8n">n8n · 4/5</div>
-      <div class="step-vline"></div>
-    </div>
-    <div class="step-body">
-      <div class="card card-warm">
-        <div class="card-stripe stripe-solar"></div>
-        <div class="card-head">
-          <div><div class="card-id">n8n · Checa se todos os deals foram assinados · 07:10h / 13:10h / 19:30h · tempo médio 00:02</div>
-          <div class="card-title">Verifica assinaturas no ClickSign e sinaliza no HubSpot</div></div>
-          <div class="card-status status-n8n">🔶 n8n</div>
+      <div class="wf-block">
+        <div class="wf-header">
+          <span class="wf-name">WF Ticket 5: Status → 'Cadastro no OPS'</span>
+          <span class="wf-id">ID: 1726537479</span>
         </div>
-        <div class="card-body">
-          <div class="actions-list">
-            <div class="action"><div class="act-num num-solar">1</div><span>Consulta ClickSign sobre status de assinaturas pendentes</span></div>
-            <div class="action"><div class="act-num num-solar">2</div><span>Quando todos assinam: escreve <strong>Contratos de Negócios Associados Assinados? = True</strong> (T maiúsculo — crítico!)</span></div>
+        <div class="wf-body">
+          <div class="trigger-box">
+            <div class="trigger-label">Gatilho</div>
+            `documentos_baixados` = `True`.
+          </div>
+          <div class="action-flow">
+            <div class="action-node"><div class="label">Ação</div>Move Ticket para 'Cadastro no OPS'</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node terminal"><div class="label">Resultado</div>Aciona n8n para cadastro no OPS</div>
           </div>
         </div>
-        <div class="card-alert alert-crit" style="margin:0 20px 15px;">
-          <div class="alert-icon">🚨</div>
-          <div class="alert-text"><strong>Case-sensitive:</strong> o valor deve ser <strong>True</strong> com T maiúsculo. Se o n8n escrever <strong>true</strong> em minúsculas, o WF Ticket 4 não reconhece e o ticket fica preso em "Aguardando Assinatura".</div>
-        </div>
-        <div class="card-props"><span class="prop-tag prop-n8n">Contratos de Negócios Associados Assinados? = True</span></div>
       </div>
-    </div>
-  </div>
 
-  <div class="signal-row"><div class="signal-chip">"Assinados?" = True → WF Ticket 4</div></div>
+      <div class="n8n-block">
+        <div class="n8n-label">Fluxo n8n: Cadastra no OPS</div>
+        <div class="tl-desc">Cadastra beneficiários no OPS e atualiza `negocios_do_ticket_cadastrados_no_ops` = `true`.</div>
+        <div class="tl-meta">Execução: 3x ao dia (10:50, 16:50, 23:10) · Tempo médio: 01:30</div>
+      </div>
 
-  <div class="step-row">
-    <div class="step-aside">
-      <div class="step-badge badge-hs">T4</div>
-      <div class="step-type-lbl lbl-hs">HubSpot</div>
-      <div class="step-vline"></div>
-    </div>
-    <div class="step-body">
-      <div class="card card-white">
-        <div class="card-stripe stripe-rubi"></div>
-        <div class="card-head">
-          <div><div class="card-id">WF Ticket · ID 1723227507</div>
-          <div class="card-title">Contratos Assinados → Baixando Documentos</div></div>
-          <div class="card-status status-hs">● Ativo</div>
+      <div class="wf-block">
+        <div class="wf-header">
+          <span class="wf-name">WF Ticket 6: Status → 'Aberto Rateio'</span>
+          <span class="wf-id">ID: 1756086655</span>
         </div>
-        <div class="card-body">
-          <div class="trig-box"><div class="trig-text">Status = "Aguardando Assinatura" AND <strong>Contratos de Negócios Associados Assinados? = True</strong></div></div>
-          <div class="actions-list" style="margin-top:10px;">
-            <div class="action"><div class="act-num num-rubi">1</div><span>Status do Ticket → <strong>"Assinados - Baixando Documentos"</strong></span></div>
+        <div class="wf-body">
+          <div class="trigger-box">
+            <div class="trigger-label">Gatilho</div>
+            `negocios_do_ticket_cadastrados_no_ops` = `true`.
+          </div>
+          <div class="action-flow">
+            <div class="action-node"><div class="label">Ação</div>Move Ticket para 'Aberto Rateio'</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node"><div class="label">Ação</div>Move Negócio associado para 'Em Fluxo de Rateio'</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node terminal"><div class="label">Resultado</div>Negócio e Ticket prontos para o rateio</div>
           </div>
         </div>
-        <div class="card-props"><span class="prop-tag prop-hs">Status do Ticket</span><span class="prop-tag prop-hs">Contratos de Negócios Associados Assinados?</span></div>
       </div>
     </div>
   </div>
+</section>
 
-  <div class="signal-row"><div class="signal-chip">Status = "Assinados - Baixando Documentos" → n8n "Baixar Documentos" roda às 20h</div></div>
+<!-- ══════════════════════════════════════════════ -->
+<!--  SEÇÃO: RATEIO                                -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="section" id="rateio">
+  <div class="section-title">Fase 8: Em Fluxo de Rateio <span class="new-badge">NOVO</span></div>
+  <div class="section-desc">Conclusão do ciclo operacional com o rateio.</div>
 
-  <div class="step-row">
-    <div class="step-aside">
-      <div class="step-badge badge-n8n">n8n</div>
-      <div class="step-type-lbl lbl-n8n">n8n · 5/5</div>
-      <div class="step-vline"></div>
-    </div>
-    <div class="step-body">
-      <div class="card card-warm">
-        <div class="card-stripe stripe-solar"></div>
-        <div class="card-head">
-          <div><div class="card-id">n8n · Baixar Documentos · 20h · tempo médio 01:40</div>
-          <div class="card-title">Baixa contratos assinados do ClickSign e salva no Google Drive</div></div>
-          <div class="card-status status-n8n">🔶 n8n</div>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot new"></div>
+      <div class="tl-phase">Fase 8: Em Fluxo de Rateio</div>
+      <div class="tl-desc">O negócio aguarda a conclusão do rateio, que é validada por um novo workflow.</div>
+      <div class="tl-meta">Gatilho: Negócio em 'Em Fluxo de Rateio' e Ticket em 'Aberto Rateio'</div>
+      <div class="wf-block">
+        <div class="wf-header">
+          <span class="wf-name">WF7: Rateio Concluído</span>
+          <span class="wf-id">ID: 1798882847</span>
         </div>
-        <div class="card-body">
-          <div class="actions-list">
-            <div class="action"><div class="act-num num-solar">1</div><span>Baixa os contratos assinados do ClickSign</span></div>
-            <div class="action"><div class="act-num num-solar">2</div><span>Faz upload no Google Drive</span></div>
-            <div class="action"><div class="act-num num-solar">3</div><span>Escreve no ticket: <strong>Link - Anexos do Drive</strong> com a URL dos documentos</span></div>
+        <div class="wf-body">
+          <div class="trigger-box">
+            <div class="trigger-label">Gatilho</div>
+            Ticket entra em 'Rateio Aprovado' (Pipeline de Cobrança).
+          </div>
+          <div class="condition-list">
+            <li class="condition-item">
+              <div class="condition-icon">✅</div>
+              <div class="prop">`contratos_do_ticket_gerados`</div>
+              <div class="val">= `true`</div>
+              <div class="desc">Contratos gerados.</div>
+            </li>
+            <li class="condition-item">
+              <div class="condition-icon">✅</div>
+              <div class="prop">`contratos_do_ticket_no_clicksign`</div>
+              <div class="val">= `true`</div>
+              <div class="desc">Contratos no ClickSign.</div>
+            </li>
+            <li class="condition-item">
+              <div class="condition-icon">✅</div>
+              <div class="prop">`contratos_de_negocios_associados_assinados`</div>
+              <div class="val">= `True`</div>
+              <div class="desc">Contratos assinados (case-sensitive).</div>
+            </li>
+            <li class="condition-item">
+              <div class="condition-icon">✅</div>
+              <div class="prop">`link_anexos_do_drive`</div>
+              <div class="val">`HAS_PROPERTY`</div>
+              <div class="desc">Link dos anexos no Drive existe.</div>
+            </li>
+            <li class="condition-item">
+              <div class="condition-icon">✅</div>
+              <div class="prop">`documentos_baixados`</div>
+              <div class="val">= `True`</div>
+              <div class="desc">Documentos baixados (case-sensitive).</div>
+            </li>
+            <li class="condition-item">
+              <div class="condition-icon">✅</div>
+              <div class="prop">`negocios_do_ticket_cadastrados_no_ops`</div>
+              <div class="val">= `true`</div>
+              <div class="desc">Negócios cadastrados no OPS.</div>
+            </li>
+            <li class="condition-item">
+              <div class="condition-icon">✅</div>
+              <div class="prop">`protocolo_de_rateio`</div>
+              <div class="val">`HAS_PROPERTY`</div>
+              <div class="desc">Protocolo de rateio preenchido.</div>
+            </li>
+            <li class="condition-item">
+              <div class="condition-icon">✅</div>
+              <div class="prop">`id_beneficiario_ops`</div>
+              <div class="val">`HAS_PROPERTY`</div>
+              <div class="desc">ID do beneficiário no OPS.</div>
+            </li>
+            <li class="condition-item">
+              <div class="condition-icon">✅</div>
+              <div class="prop">`id_unidade_geradora_ops`</div>
+              <div class="val">`HAS_PROPERTY`</div>
+              <div class="desc">ID da unidade geradora no OPS.</div>
+            </li>
+            <li class="condition-item">
+              <div class="condition-icon">✅</div>
+              <div class="prop">`data_de_entrada_no_estagio_de_rateio`</div>
+              <div class="val">`HAS_PROPERTY`</div>
+              <div class="desc">Data de entrada no estágio de rateio.</div>
+            </li>
+          </ul>
+          <div class="action-flow">
+            <div class="action-node"><div class="label">Ação</div>Aguarda 1 minuto</div>
+            <div class="action-arrow">→</div>
+            <div class="action-node terminal"><div class="label">Resultado</div>Move Negócio para 'Rateio Concluído'</div>
+          </div>
+          <div class="alert critical">
+            <div class="alert-icon">🚨</div>
+            <div>
+              <div class="alert-title">CRÍTICO · `protocolo_de_rateio` sem origem mapeada</div>
+              Esta propriedade é condição obrigatória no WF7 mas não estava documentada. Se não for preenchida (ou se o processo que a preenche falhar), o negócio nunca chega a "Rateio Concluído". <strong style="color: var(--accent-error);">Ação necessária: mapear quando e onde esta propriedade é preenchida.</strong>
+            </div>
           </div>
         </div>
-        <div class="card-props"><span class="prop-tag prop-n8n">Link - Anexos do Drive</span></div>
       </div>
     </div>
   </div>
+</section>
 
-  <div class="signal-row"><div class="signal-chip">"Link - Anexos do Drive" preenchido → WF Ticket 5</div></div>
+<!-- ══════════════════════════════════════════════ -->
+<!--  SEÇÃO: FLUXOS N8N                            -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="section" id="n8n">
+  <div class="section-title">Fluxos n8n — Horários e Tempos de Execução</div>
+  <div class="section-desc">Detalhes dos fluxos n8n, seus gatilhos e impactos.</div>
 
-  <div class="step-row">
-    <div class="step-aside">
-      <div class="step-badge badge-hs">T5</div>
-      <div class="step-type-lbl lbl-hs">HubSpot</div>
-      <div class="step-vline"></div>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot n8n-dot"></div>
+      <div class="tl-phase">Criação de Tickets</div>
+      <div class="tl-desc">Monitora negócios em "Cobrança" com `ticket_de_cobranca` = `false`, agrupa por usina/gerador e cria um ticket de rateio no HubSpot, associando os negócios.</div>
+      <div class="tl-meta">Execução: 3x ao dia (7:00, 13:00, 19:20) · Tempo médio: 00:30</div>
     </div>
-    <div class="step-body">
-      <div class="card card-white">
-        <div class="card-stripe stripe-rubi"></div>
-        <div class="card-head">
-          <div><div class="card-id">WF Ticket · ID 1726537479</div>
-          <div class="card-title">Documentos no Drive → Cadastro no OPS</div></div>
-          <div class="card-status status-hs">● Ativo</div>
-        </div>
-        <div class="card-body">
-          <div class="trig-box"><div class="trig-text">Status = "Assinados - Baixando Documentos" AND <strong>Link - Anexos do Drive preenchido</strong></div></div>
-          <div class="actions-list" style="margin-top:10px;">
-            <div class="action"><div class="act-num num-rubi">1</div><span>Status do Ticket → <strong>"Cadastro no OPS"</strong></span></div>
-          </div>
-        </div>
-        <div class="card-props"><span class="prop-tag prop-hs">Status do Ticket</span><span class="prop-tag prop-hs">Link - Anexos do Drive</span></div>
-      </div>
+    <div class="tl-item">
+      <div class="tl-dot n8n-dot"></div>
+      <div class="tl-phase">Geração de Contratos</div>
+      <div class="tl-desc">Gera os contratos e atualiza `contratos_do_ticket_gerados` = `true`.</div>
+      <div class="tl-meta">Execução: 3x ao dia (7:10, 13:10, 19:30) · Tempo médio: 00:30</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot n8n-dot"></div>
+      <div class="tl-phase">Envio ClickSign</div>
+      <div class="tl-desc">Envia contratos para o ClickSign e atualiza `contratos_do_ticket_no_clicksign` = `true`.</div>
+      <div class="tl-meta">Execução: 3x ao dia (7:40, 13:40, 20:00) · Tempo médio: 00:30</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot n8n-dot"></div>
+      <div class="tl-phase">Checa Assinaturas</div>
+      <div class="tl-desc">Monitora o ClickSign e atualiza `contratos_de_negocios_associados_assinados` = `True`.</div>
+      <div class="tl-meta">Execução: 3x ao dia (8:10, 14:10, 20:30) · Tempo médio: 01:00</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot n8n-dot"></div>
+      <div class="tl-phase">Baixar Documentos</div>
+      <div class="tl-desc">Baixa documentos do ClickSign para o Drive e atualiza `link_anexos_do_drive` e `documentos_baixados` = `True`.</div>
+      <div class="tl-meta">Execução: 3x ao dia (9:10, 15:10, 21:30) · Tempo médio: 01:40</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot n8n-dot"></div>
+      <div class="tl-phase">Cadastra no OPS</div>
+      <div class="tl-desc">Cadastra beneficiários no OPS e atualiza `negocios_do_ticket_cadastrados_no_ops` = `true`.</div>
+      <div class="tl-meta">Execução: 3x ao dia (10:50, 16:50, 23:10) · Tempo médio: 01:30</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot n8n-dot"></div>
+      <div class="tl-phase">Mescla os tickets</div>
+      <div class="tl-desc">Identifica e mescla tickets duplicados, consolidando informações e anexos.</div>
+      <div class="tl-meta">Execução: 3x ao dia (7:05, 13:05, 19:25) · Tempo médio: 00:30</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot n8n-dot"></div>
+      <div class="tl-phase">Atualiza o valor do ticket principal com o novo id</div>
+      <div class="tl-desc">Atualiza o ID do ticket principal após a mesclagem.</div>
+      <div class="tl-meta">Execução: Após "Mescla os tickets" · Tempo médio: 00:05</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot n8n-dot"></div>
+      <div class="tl-phase">Mapeia as propriedades do deal igreen com erro</div>
+      <div class="tl-desc">Registra e trata erros de mapeamento de propriedades de deals iGreen.</div>
+      <div class="tl-meta">Execução: Sob demanda / Erro · Tempo médio: 00:10</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot n8n-dot"></div>
+      <div class="tl-phase">Busca os arquivos dos tickets secundários</div>
+      <div class="tl-desc">Localiza arquivos de tickets que serão mesclados.</div>
+      <div class="tl-meta">Execução: Após "Mescla os tickets" · Tempo médio: 00:15</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot n8n-dot"></div>
+      <div class="tl-phase">Move os arquivos para a pasta principal</div>
+      <div class="tl-desc">Transfere arquivos para a pasta do ticket principal após a mesclagem.</div>
+      <div class="tl-meta">Execução: Após "Busca os arquivos..." · Tempo médio: 00:20</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════ -->
+<!--  SEÇÃO: PROPRIEDADES CRÍTICAS                 -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="section" id="props">
+  <div class="section-title">Propriedades Críticas — Impacto no Fluxo</div>
+  <div class="section-desc">Propriedades essenciais para o avanço dos workflows e fluxos n8n.</div>
+
+  <table class="props-table">
+    <thead>
+      <tr>
+        <th>Propriedade</th>
+        <th>Objeto</th>
+        <th>Origem / Valor Esperado</th>
+        <th>Impacto se Ausente/Incorreta</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="prop-name">existe_pendencia_para_validacao_comercial</span></td>
+        <td>Negócio</td>
+        <td>Analista (true/false)</td>
+        <td>WF2, WF3, WF4 não acionam. Deal travado em "Para Validação".</td>
+      </tr>
+      <tr>
+        <td><span class="prop-name">pendencia_comercial_validacao</span></td>
+        <td>Negócio</td>
+        <td>Analista (lista suspensa)</td>
+        <td>WF3 não avança. Deal travado em "Pendências" sem notificação.</td>
+      </tr>
+      <tr>
+        <td><span class="prop-name">gerador_alocacao</span></td>
+        <td>Negócio</td>
+        <td>CS / Operações</td>
+        <td>WF Alocação não avança. Deal travado em "Alocação".</td>
+      </tr>
+      <tr>
+        <td><span class="prop-name">id_usina_alocacao_e_rateio</span></td>
+        <td>Negócio</td>
+        <td>CS / Operações</td>
+        <td>WF Alocação não avança. Deal travado em "Alocação".</td>
+      </tr>
+      <tr>
+        <td><span class="prop-name">id_gerador_alocacao_e_rateio</span></td>
+        <td>Negócio</td>
+        <td>CS / Operações</td>
+        <td>WF Alocação não avança. Deal travado em "Alocação".</td>
+      </tr>
+      <tr>
+        <td><span class="prop-name">data_de_entrada_no_estagio_de_alocacao</span></td>
+        <td>Negócio</td>
+        <td>HubSpot (automático)</td>
+        <td>WF Alocação não avança. Deal travado em "Alocação".</td>
+      </tr>
+      <tr>
+        <td><span class="prop-name">ticket_de_cobranca</span></td>
+        <td>Negócio</td>
+        <td>HubSpot (false)</td>
+        <td>n8n Criação de Tickets não aciona. Ticket não é criado.</td>
+      </tr>
+      <tr>
+        <td><span class="prop-name">contratos_do_ticket_gerados</span></td>
+        <td>Ticket</td>
+        <td>n8n (true)</td>
+        <td>WF Ticket 2 não aciona + WF7 bloqueado</td>
+      </tr>
+      <tr>
+        <td><span class="prop-name">contratos_do_ticket_no_clicksign</span></td>
+        <td>Ticket</td>
+        <td>n8n (true)</td>
+        <td>WF Ticket 3 não aciona + WF7 bloqueado</td>
+      </tr>
+      <tr>
+        <td><span class="prop-name">contratos_de_negocios_associados_assinados</span></td>
+        <td>Ticket</td>
+        <td>n8n (<strong>True</strong> maiúsculo)</td>
+        <td>WF Ticket 4 não aciona + WF7 bloqueado</td>
+      </tr>
+      <tr>
+        <td><span class="prop-name">link_anexos_do_drive</span></td>
+        <td>Ticket</td>
+        <td>n8n (Baixar Documentos)</td>
+        <td>WF Ticket 5 não aciona + WF7 bloqueado</td>
+      </tr>
+      <tr>
+        <td><span class="prop-name">documentos_baixados<span class="prop-new">NOVO</span></span></td>
+        <td>Ticket</td>
+        <td>n8n (<strong>True</strong> maiúsculo)</td>
+        <td>WF7 não aciona — segunda propriedade case-sensitive</td>
+      </tr>
+      <tr>
+        <td><span class="prop-name">negocios_do_ticket_cadastrados_no_ops</span></td>
+        <td>Ticket</td>
+        <td>n8n (lowercase)</td>
+        <td>WF Ticket 6 não aciona + WF7 bloqueado</td>
+      </tr>
+      <tr>
+        <td><span class="prop-name">protocolo_de_rateio<span class="prop-new">NOVO</span></span></td>
+        <td>Ticket</td>
+        <td>⚠️ Desconhecido</td>
+        <td>WF7 não aciona — origem a mapear</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══════════════════════════════════════════════ -->
+<!--  SEÇÃO: TROUBLESHOOTING                       -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="section" id="troubleshoot">
+  <div class="section-title">Troubleshooting — Problemas que Travam o Fluxo</div>
+  <div class="section-desc">Críticos e de atenção · Atualizado com descobertas do WF7</div>
+
+  <div class="alert critical">
+    <div class="alert-icon">🚨</div>
+    <div>
+      <div class="alert-title">CRÍTICO · existe_pendencia_para_validacao_comercial não preenchida</div>
+      O analista conclui a análise mas não preenche a propriedade. WF2, WF3 e WF4 não acionam. Deal fica em "Para Validação" sem alerta.
     </div>
   </div>
 
-  <div class="signal-row"><div class="signal-chip">Status = "Cadastro no OPS" → n8n "Cadastra beneficiários no OPS" roda às 03h</div></div>
-
-  <div class="step-row">
-    <div class="step-aside">
-      <div class="step-badge badge-n8n">OPS</div>
-      <div class="step-type-lbl lbl-n8n">n8n → OPS</div>
-      <div class="step-vline"></div>
-    </div>
-    <div class="step-body">
-      <div class="card card-warm">
-        <div class="card-stripe stripe-solar"></div>
-        <div class="card-head">
-          <div><div class="card-id">n8n · Cadastra beneficiários no OPS · 03h · tempo médio 01:30</div>
-          <div class="card-title">Registra o beneficiário no sistema OPS</div></div>
-          <div class="card-status status-n8n">🔶 n8n</div>
-        </div>
-        <div class="card-body">
-          <div class="actions-list">
-            <div class="action"><div class="act-num num-solar">1</div><span>Lê dados do ticket e negócios associados</span></div>
-            <div class="action"><div class="act-num num-solar">2</div><span>Cadastra beneficiário no sistema OPS</span></div>
-            <div class="action"><div class="act-num num-solar">3</div><span>Escreve: <strong>Negócios do Ticket Cadastrados no OPS? = verdadeiro</strong></span></div>
-          </div>
-        </div>
-        <div class="card-props"><span class="prop-tag prop-n8n">Negócios do Ticket Cadastrados no OPS? = verdadeiro</span></div>
-      </div>
+  <div class="alert critical">
+    <div class="alert-icon">🚨</div>
+    <div>
+      <div class="alert-title">CRÍTICO · Case sensitivity — 2 propriedades (confirmado pelo WF7)</div>
+      <strong style="color: var(--accent-error);">contratos_de_negocios_associados_assinados</strong> e <strong style="color: var(--accent-error);">documentos_baixados</strong> exigem "True" com T maiúsculo. O n8n precisa escrever exatamente assim. Se usar lowercase, nenhum workflow subsequente aciona e o ticket fica travado silenciosamente.
     </div>
   </div>
 
-  <div class="signal-row"><div class="signal-chip">"Cadastrados no OPS?" = verdadeiro → WF Ticket 6 → deal entra em Fluxo de Rateio</div></div>
-
-  <div class="step-row">
-    <div class="step-aside">
-      <div class="step-badge badge-hs">T6</div>
-      <div class="step-type-lbl lbl-hs">HubSpot</div>
-    </div>
-    <div class="step-body">
-      <div class="card card-white">
-        <div class="card-stripe stripe-rubi"></div>
-        <div class="card-head">
-          <div><div class="card-id">WF Ticket · ID 1756086655</div>
-          <div class="card-title">Cadastro OPS Concluído → Em Fluxo de Rateio</div></div>
-          <div class="card-status status-hs">● Ativo</div>
-        </div>
-        <div class="card-body">
-          <div class="trig-box"><div class="trig-text">Status = "Cadastro no OPS" AND <strong>Negócios do Ticket Cadastrados no OPS? = verdadeiro</strong></div></div>
-          <div class="actions-list" style="margin-top:10px;">
-            <div class="action"><div class="act-num num-rubi">1</div><span>Ticket: Status → <strong>"Aberto (Rateio)"</strong></span></div>
-            <div class="action"><div class="act-num num-rubi">2</div><span>Negócio associado: dealstage → <strong>Em Fluxo de Rateio</strong> (<span class="mono">1119360531</span>)</span></div>
-          </div>
-        </div>
-        <div class="card-props">
-          <span class="prop-tag prop-hs">Status do Ticket</span>
-          <span class="prop-tag prop-hs">dealstage</span>
-          <span class="prop-tag prop-hs">Negócios do Ticket Cadastrados no OPS?</span>
-        </div>
-      </div>
+  <div class="alert critical">
+    <div class="alert-icon">🚨</div>
+    <div>
+      <div class="alert-title">CRÍTICO · protocolo_de_rateio sem origem mapeada</div>
+      Esta propriedade é condição obrigatória no WF7 mas não estava documentada. Se não for preenchida (ou se o processo que a preenche falhar), o negócio nunca chega a "Rateio Concluído". <strong style="color: var(--accent-error);">Ação necessária: mapear quando e onde esta propriedade é preenchida.</strong>
     </div>
   </div>
-</div>
 
-<!-- ═══════════════════════════════════════
-     FASE 8 — EM FLUXO DE RATEIO
-═══════════════════════════════════════ -->
-<div class="phase-container">
-  <div class="sec-head">
-    <div class="sec-icon">8</div>
-    <div class="sec-title">Fase 8 — Em Fluxo de Rateio</div>
-    <div class="sec-line"></div>
+  <div class="alert critical">
+    <div class="alert-icon">🚨</div>
+    <div>
+      <div class="alert-title">CRÍTICO · n8n offline = pipeline congela sem aviso</div>
+      O n8n monitora o HubSpot por agendamento. Se cair, o HubSpot não percebe. O processo para no último status do ticket atingido.
+    </div>
   </div>
 
-  <div class="phase-header ph-teal">
-    <div class="phase-num num-teal">8</div>
-    <div class="phase-info">
-      <div class="phase-tag tag-white">Fim do ciclo documentado</div>
-      <div class="phase-title title-light">Deal chega em "Em Fluxo de Rateio" — processo de distribuição de energia iniciado</div>
-      <div class="phase-subtitle sub-
+  <div class="alert warning">
+    <div class="alert-icon">⚠️</div>
+    <div>
+      <div class="alert-title">ATENÇÃO · pendencia_comercial_validacao com valor fora da lista</div>
+      WF3 tem dois branches fechados. Qualquer valor não mapeado faz o deal parar sem ação e sem notificação.
+    </div>
+  </div>
 
+  <div class="alert warning">
+    <div class="alert-icon">⚠️</div>
+    <div>
+      <div class="alert-title">ATENÇÃO · analista_de_validacao_comercial nunca é sobrescrito</div>
+      Em nenhum dos 5 workflows de validação. Em revalidações, o analista anterior permanece atribuído se não for removido manualmente.
+    </div>
+  </div>
+
+  <div class="alert warning">
+    <div class="alert-icon">⚠️</div>
+    <div>
+      <div class="alert-title">ATENÇÃO · Branch AlugSol duplicado no WF1</div>
+      O path de Gabriela Bruno está inacessível. Todos os deals AlugSol vão para Joao Vitor / Leticia Ananda.
+    </div>
+  </div>
+
+  <div class="alert warning">
+    <div class="alert-icon">⚠️</div>
+    <div>
+      <div class="alert-title">ATENÇÃO · Campos de alocação incompletos</div>
+      Se qualquer um dos 4 campos (usina, gerador, IDs) estiver vazio, WF Alocação não avança para Cobrança. Sem alerta.
+    </div>
+  </div>
+
+  <div class="alert warning">
+    <div class="alert-icon">⚠️</div>
+    <div>
+      <div class="alert-title">ATENÇÃO · Ticket sem vínculo com o negócio</div>
+      WF Ticket 1 e WF7 dependem da associação ticket → deal. Sem ela, a ação de mover dealstage é ignorada silenciosamente.
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════ -->
+<!--  SEÇÃO: MERMAID                               -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="section" id="mermaid">
+  <div class="section-title">Diagrama Mermaid.js — Ciclo Completo</div>
+  <div class="section-desc">Inclui Fase 8 (WF7) · Compatível com Draw.io</div>
+
+  <div class="alert info" style="margin-bottom:20px;">
+    <div class="alert-icon">📋</div>
+    <div><div class="alert-title">Como usar no Draw.io</div>1. Acesse app.diagrams.net · 2. Clique em <strong>Extras → Edit Diagram</strong> (Ctrl+Shift+X) · 3. Cole o código abaixo e clique em <strong>Insert</strong></div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span>mermaid · graph TD</span>
+      <button class="copy-btn" onclick="copyMermaid()">Copiar código</button>
+    </div>
+    <div class="code-content" id="mermaidCode">graph TD
+
+%% ── FASE 1: ENTRADA ──────────────────────────────────────
+T1([🚀 Deal muda para 'Validação Comercial']) --> COND1{Já passou por\n'Para Validação'?}
+COND1 -->|Sim| BLOQ1[🚫 WF1 bloqueado]
+COND1 -->|Não| E1_PIPE{Pipeline?}
+
+E1_PIPE -->|Sunne Vendas| E1_SV[Move → 'Para Validação'\nAtribui JV / LA]
+E1_PIPE -->|Funil Gestão| E1_FSG[Move → 'Para Validação'\nAtribui JV / LA]
+E1_PIPE -->|Marketplace| E1_MKT_CHK{Tipo AlugSol?}
+E1_PIPE -->|iGreen / Alexandria| E1_IG[Apenas atribui\nJV / LA]
+
+E1_MKT_CHK -->|AlugSol| E1_MKT[Move → 'Para Validação'\nAtribui JV / LA]
+E1_MKT_CHK -->|⚠️ Outro| E1_ERR[⚠️ Bug: GB inacessível\nSem ação configurada]
+
+E1_SV & E1_FSG & E1_MKT & E1_IG --> ANALISTA
+
+%% ── WF5: REDE DE SEGURANÇA ──────────────────────────────
+WF5([⚡ WF5: Deal em 'Para Validação'\nsem analista]) --> E5[Atribui JV / LA\npor rodízio]
+E5 --> ANALISTA
+
+%% ── FASE 2: VALIDAÇÃO MANUAL ────────────────────────────
+ANALISTA[🔍 Analista valida\nmanualmente] --> DECISAO{existe_pendencia\n_para_validacao_comercial}
+
+%% ── FASE 3A: APROVAÇÃO ──────────────────────────────────
+DECISAO -->|false\naprovado| E2_A[Move → 'Validados'\nPipeline de Validação]
+E2_A --> E2_W[⏱ Aguarda 1 min]
+E2_W --> E2_PIPE{Pipeline\nde origem?}
+
+E2_PIPE -->|Marketplace| E2_MKT[→ 'Negócio Fechado'\nMarketplace]
+E2_PIPE -->|Sunne Vendas| E2_SV[→ 'Concluído']
+E2_PIPE -->|Gestão| E2_FSG[→ 'Negócio Fechado']
+E2_PIPE -->|iGreen/Alexandria| E2_IG[→ 'Alocação'\nFluxo ACR]
+
+E2_MKT & E2_SV & E2_FSG & E2_IG --> BASTAO
+
+%% ── FASE 4: PASSAGEM BASTÃO ─────────────────────────────
+BASTAO[WF Bastão Comercial ↔ CS\nID 1653033997] --> TROCATIT{troca_de\n_titularidade?}
+TROCATIT -->|true| PATH_TROCA[Path troca titularidade]
+TROCATIT -->|false| ALOCACAO[Move → 'Alocação'\nFluxo ACR]
+
+%% ── FASE 5: ALOCAÇÃO ────────────────────────────────────
+ALOCACAO --> CS_CAMPOS{4 campos\npreenchidos?}
+CS_CAMPOS -->|Não| CS_AGUARDA[⏳ CS preenche\nmanualmente]
+CS_AGUARDA --> CS_CAMPOS
+CS_CAMPOS -->|Sim| COBRANCA[Move → 'Cobrança'\nticket_de_cobranca = false]
+
+%% ── FASE 6: TICKET MANUAL ───────────────────────────────
+COBRANCA --> TICKET_CRIADO[CS cria ticket\nmanualmente]
+TICKET_CRIADO --> PAG{Pagamento\nconfirmado?}
+PAG --> WF_T1
+
+%% ── FASE 7: CADEIA CONTRATOS ────────────────────────────
+WF_T1[WF Ticket 1 · ID 1697798163\nStatus → 'Gerar Contratos'] --> N8N_1
+N8N_1[⬡ n8n: Gera Contratos\ncontratos_do_ticket_gerados = true] --> WF_T2
+WF_T2[WF Ticket 2 · ID 1754291845\nStatus → 'Subir Contratos ClickSign'] --> N8N_2
+N8N_2[⬡ n8n: Envio ClickSign\ncontratos_do_ticket_no_clicksign = true] --> WF_T3
+WF_T3[WF Ticket 3 · ID 1756086378\nStatus → 'Aguardando Assinatura'] --> N8N_3
+N8N_3[⬡ n8n: Checa Assinaturas\ncontratos_de_negocios... = True 🔴] --> WF_T4
+WF_T4[WF Ticket 4 · ID 1723227507\nStatus → 'Baixando Documentos'] --> N8N_4
+N8N_4[⬡ n8n: Baixar Documentos\nlink_drive + documentos_baixados = True 🔴] --> WF_T5
+WF_T5[WF Ticket 5 · ID 1726537479\nStatus → 'Cadastro no OPS'] --> N8N_5
+N8N_5[⬡ n8n: Cadastra no OPS\nnegocios_do_ticket_cadastrados_no_ops = true] --> WF_T6
+WF_T6[WF Ticket 6 · ID 1756086655\nTicket → 'Aberto Rateio'\nDeal → 'Em Fluxo de Rateio']
+
+%% ── FASE 8: RATEIO CONCLUÍDO (NOVO) ─────────────────────
+WF_T6 --> RATEIO_APROV([Ticket → 'Rateio Aprovado'\n1122920288])
+RATEIO_APROV --> WF7_COND{10 condições\natendidas?}
+WF7_COND -->|protocolo_de_rateio\ndocumentos_baixados etc.| WF7_W[⏱ Aguarda 1 min\nWF7 · ID 1798882847]
+WF7_COND -->|Condição faltando| WF7_BLOQ[⚠️ WF7 bloqueado\nDeal fica em 'Em Fluxo de Rateio']
+WF7_W --> FIM_OK([✅ Deal → 'Rateio Concluído'\n1182747317])
+
+%% ── FASE 3B: PENDÊNCIA ──────────────────────────────────
+DECISAO -->|true\ncom pendência| E3_W[⏱ Aguarda 2 min]
+E3_W --> E3_TIPO{pendencia_comercial\n_validacao}
+E3_TIPO -->|17 tipos corrigíveis| E3_PEND[Move → 'Pendências'\nPipeline Validação]
+E3_TIPO -->|Fraude / Benefício| E3_CANC[Move → 'Cancelados'\nPipeline Validação]
+E3_TIPO -->|⚠️ Valor inválido| E3_TRAV[⚠️ Deal travado\nSem classificação]
+E3_PEND --> E3_DEVPEND[Devolve pipeline original\nestágio 'Validação Comercial']
+E3_CANC --> E3_DEVCANC[Devolve pipeline original\nestágio 'Perdido/Descartado']
+E3_DEVPEND & E3_DEVCANC --> NOTIF[🔔 Notifica owner + closer]
+E3_DEVCANC --> FIM_CANC([❌ Negócio Cancelado])
+
+%% ── FASE 3C: REVALIDAÇÃO ────────────────────────────────
+E3_DEVPEND --> CLOSER[👤 Closer corrige\ne limpa existe_pendencia]
+CLOSER --> WF4{WF4: existe_pendencia\nvazio + já passou\npor 'Para Validação'?}
+WF4 -->|Sim| E4_MOVE[Move → 'Para Validação'\nAtribui novo analista]
+WF4 -->|Não| WF4_BLOQ[🚫 WF4 bloqueado]
+E4_MOVE --> ANALISTA
+
+%% ── ESTILOS ─────────────────────────────────────────────
+style FIM_OK fill:var(--accent-success),color:#fff,stroke:var(--sunne-turquesa)
+style FIM_CANC fill:var(--accent-error),color:#fff,stroke:var(--sunne-magenta)
+style E1_ERR fill:var(--accent-warning),color:#000,stroke:var(--sunne-amarelo-dourado)
+style E3_TRAV fill:var(--accent-warning),color:#000,stroke:var(--sunne-amarelo-dourado)
+style WF7_BLOQ fill:var(--accent-warning),color:#000,stroke:var(--sunne-amarelo-dourado)
+style BLOQ1 fill:var(--accent-warning),color:#000,stroke:var(--sunne-amarelo-dourado)
+style WF5 fill:var(--accent-primary),color:#fff,stroke:var(--sunne-laranja-solar) /* Usando Laranja Solar para destaque de WF */
+style E5 fill:var(--accent-primary),color:#fff,stroke:var(--sunne-laranja-solar)
+style N8N_1 fill:var(--n8n),color:#fff,stroke:#e65100
+style N8N_2 fill:var(--n8n),color:#fff,stroke:#e65100
+style N8N_3 fill:var(--n8n),color:#fff,stroke:#e65100
+style N8N_4 fill:var(--n8n),color:#fff,stroke:#e65100
+style N8N_5 fill:var(--n8n),color:#fff,stroke:#e65100
+style RATEIO_APROV fill:var(--sunne-turquesa),color:#fff,stroke:var(--sunne-turquesa) /* Turquesa para rateio aprovado */
+style WF7_W fill:var(--accent-success),color:#fff,stroke:var(--sunne-turquesa)
+style NOTIF fill:var(--accent-primary),color:#fff,stroke:var(--sunne-laranja-solar)</div>
+  </div>
+
+  <div class="alert warning">
+    <div class="alert-icon">🔴</div>
+    <div><div class="alert-title">Legenda — Marcadores no Diagrama</div><code>🔴</code> = propriedade case-sensitive (True com T maiúsculo) · <code>⬡</code> = execução n8n (agendada) · <code>⚠️</code> = ponto de falha silenciosa</div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <span>SUNNE · Operações Internas · Fluxo de Validação Comercial</span>
+  <span>v2.1 · Abr 2026 · +1 workflow (WF7 ID 1798882847)</span>
+</footer>
+
+<script>
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    const tabs = document.querySelectorAll('.nav-tab');
+    const map = {overview:0,validacao:1,alocacao:2,contratos:3,rateio:4,n8n:5,props:6,troubleshoot:7,mermaid:8};
+    tabs[map[id]].classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function copyMermaid() {
+    const text = document.getElementById('mermaidCode').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = 'Copiado ✓';
+      setTimeout(() => { btn.textContent = 'Copiar código'; }, 2000);
+    });
+  }
+</script>
+</body>
+</html>
